@@ -7,7 +7,7 @@ void main(void)
 {
     printf("정재민           2018038067\n\n");
     for(i=0; i<MAX_SIZE; i++)
-    input[i]=i;//0~99까지 imput 배열에 순서대로 대입한다. 
+    input[i]=i;//0~99까지 input 배열에 순서대로 대입한다. 
     printf("address of input = %p\n", input); // input의 주소를 출력 한다. 
 
     answer=sum(input,MAX_SIZE);//sum 함수 호출해서 input 배열 합계산 하기
