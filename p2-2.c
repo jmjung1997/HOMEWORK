@@ -6,7 +6,7 @@ int main()
 {
     printf("\n\n정재민               2018038067\n\n");
     int one[]={0,1,2,3,4};
-    printf(" one      = %p\n", one ); //배열 one의 값
+    printf(" one       = %p\n", one ); //배열 one의 값
     printf("&one      = %p\n", &one); //배열 one의 주소값
     printf("&one[0]   = %p\n", &one[0]); //배열 one[0]의 주소값
     printf("\n");
