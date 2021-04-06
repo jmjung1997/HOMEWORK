@@ -158,7 +158,7 @@ void printQ(QueueType* cQ)  // 큐를 출력해주는 함수
 	i = first;
 	while (i != last) {  // 원형큐를 출력한다
 		printf("%3c", cQ->queue[i]);
-		i = (i + 1) % MAX_QUEUE_SIZE; // 원형큐 이므로 인덱스 번호는 MAX_QUEUE_SIZE-1까지 에서 순환한다
+		i = (i + 1) % MAX_QUEUE_SIZE; // 원형큐 이므로 인덱스 번호는 MAX_QUEUE_SIZE-1까지 순환한다
 
 	}
 	printf(" ]\n");
