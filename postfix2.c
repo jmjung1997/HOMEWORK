@@ -62,7 +62,7 @@ int main()
 		case 'i': case 'I': //계산하고자 하는 수식을 입력 받는다
 			getInfix();
 			break;
-		case 'p': case 'P': // 후위 표기법으로 전화한다
+		case 'p': case 'P': // 후위 표기법으로 전환한다
 			toPostfix();
 			break;
 		case 'e': case 'E': // 후위 표기법으로 값을 계산한다
