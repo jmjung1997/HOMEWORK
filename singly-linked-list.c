@@ -207,14 +207,14 @@ int insertLast(headNode* h, int key)//연결리스트 맨 뒤에 노드를 추�
     
     listNode* node = (listNode*)malloc(sizeof(listNode)); //노드를 동적할당 해준다.
     listNode* p = h->first;//연결리스트의 첫번째 노드 주소를 p에 대입
-    node->key = key; // 
+    node->key = key; //node의 키값 대입
     node->link=NULL;
     
     while (p->link!=NULL)//p->link를 가리키는 값이 NULL값이 나올 때 까지 반복한다.  
                 {
                     p = p->link;
                 }
-    p->link = node;
+    p->link = node;//맨마지막에 있던 노드를 새로 추가시켜주는 노드에 연결시켜준다
     return 0;
 }
 
@@ -222,18 +222,24 @@ int insertLast(headNode* h, int key)//연결리스트 맨 뒤에 노드를 추�
 /**
  * list의 첫번째 노드 삭제
  */
-int deleteFirst(headNode* h) {
-
+int deleteFirst(headNode* h) //연결 리스트 첫 번째 노드 삭제함수
+{
+    listNode *p=h->first; //연결리스트의 첫번째 노드 주소를 p에 대입
+    h->first=p->link; //기존 첫 번째 node가 가리키고 있던 node를 첫 번째 노드로 지정
+    free(p); //기존 첫번째 노드를 동적할당에서 해제 시켜준다.
 
     return 0;
 }
 
 
+
 /**
  * list에서 key에 대한 노드 삭제
  */
-int deleteNode(headNode* h, int key) {
+int deleteNode(headNode* h, int key) 
+{
 
+    
     return 0;
 
 }
@@ -241,8 +247,19 @@ int deleteNode(headNode* h, int key) {
 /**
  * list의 마지막 노드 삭제
  */
-int deleteLast(headNode* h) {
-
+int deleteLast(headNode* h) 
+{
+   
+    listNode* p = h->first;//연결리스트의 첫번째 노드 주소를 p에 대입
+        
+    while (p->link->link!=NULL)//p->link->link를 가리키는 값이 NULL값이 나올 때 까지 반복한다.  
+                {
+                    p = p->link;
+                }
+            p->link=NULL; //여기서 p는 마지막에서 두 번째로 있는 노드이고 가리키는 값을 NULL로 바꿔준다
+            p = p->link; //p를 마지막 노드로 이동한다.
+            free(p); //마지막 노드를 메모리 할당을 해제 시켜준다.
+            
     return 0;
 }
 
