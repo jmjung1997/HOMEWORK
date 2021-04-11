@@ -202,7 +202,7 @@ int insertNode(headNode* h, int key) //입력받은 키를 오름차순으로 �
 /**
  * list에 key에 대한 노드하나를 추가
  */
-int insertLast(headNode* h, int key)//연결리스트 맨 뒤에 노드를 추가해주는 함수
+int insertLast(headNode* h, int key)//연결리스트 맨 뒤에 노드를 추가시켜주는 함수
 {   
     
     listNode* node = (listNode*)malloc(sizeof(listNode)); //노드를 동적할당 해준다.
