@@ -9,7 +9,6 @@
 
 #include<stdio.h>
 #include<stdlib.h>
-#define _CRT_SECURE_NO_WARNINGS
  /* 필요한 헤더파일 추가 */
 
 typedef struct Node//node를 생성시켜주는 구조체
