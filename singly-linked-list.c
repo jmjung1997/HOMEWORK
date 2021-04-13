@@ -57,6 +57,7 @@ int main()
         printf("Command = ");
         scanf(" %c", &command);
 
+
         switch (command) {
         case 'z': case 'Z':
             headnode = initialize(headnode);
@@ -231,15 +232,14 @@ int insertLast(headNode* h, int key)//연결리스트 맨 뒤에 노드를 추�
  */
 int deleteFirst(headNode* h) //연결 리스트 첫 번째 노드 삭제함수
 {
-    listNode* p = h->first;
+    listNode* p = h->first; //연결리스트의 첫번째 노드 주소를 p에 대입
     if (p == NULL)//연결리스트에 아무것도 없을 때
     {
          printf("It is empty\n");
         return 0;
     }
     else 
-    {
-    listNode* p = h->first; //연결리스트의 첫번째 노드 주소를 p에 대입
+    {    
     h->first = p->link; //기존 첫 번째 node가 가리키고 있던 node를 첫 번째 노드로 지정
     free(p); //기존 첫번째 노드를 동적할당에서 해제 시켜준다.
     }
