@@ -107,7 +107,7 @@ int main()
     return 1;
 }
 
-headNode* initialize(headNode* h)//초기화 시켜주는 함수
+headNode* initialize(headNode* h)//초기화 시켜주는 함수이다
 {
 
     /* headNode가 NULL이 아니면, freeNode를 호출하여 할당된 메모리 모두 해제 */
