@@ -208,10 +208,31 @@ int insertLast(headNode* h, int key)
  * list의 마지막 노드 삭제
  */
 int deleteLast(headNode* h)
- {
+{    
+	listNode* p = h->first;//연결리스트의 첫번째 노드 주소를 p에 대입
+    if (p == NULL)//연결리스트에 아무것도 없을때
+    {
+        printf("It is empty\n");
+        return 0;
+    }
+    else if (p->rlink == NULL) //연결리스트에 마지막 노드가 한개 밖에 없을 때
+    {
+        h->first = NULL;
+        free(p); // 마지막 노드를 메모리 할당 해제 시켜준다
 
+        return 0;
+    }
+    else
+    {
+        while (p->rlink!= NULL)//p->rlink를 가리키는 값이 NULL값이 나올 때 까지 반복한다.  
+        {
+            p = p->rlink;
+        }
+        p->llink->rlink = NULL; //여기서 p는 마지막 노드이고 p->llink는 마지막에서 두번째 노드를 가리킨다 따라서 그 마지막에서 두번째 노드가 rlink로 가리키는 값을 NULL로 바꿔준다
+        free(p); //마지막 노드를 메모리 할당을 해제 시켜준다.
+    }
+    return 0;
 
-	return 0;
 }
 
 
@@ -227,14 +248,19 @@ int insertFirst(headNode* h, int key)
     node->key = key; //node의 키값 대입
     node->rlink = NULL;//node의 rlink를 NULL 값으로 비워둔다
 	node->llink = NULL;//node의 llink를 NULL 값으로 비워둔다
-    
-	node->rlink=h->first;//node rlink를 기존 p노드에 연결
-    node->llink=h;//node llink를 헤드노드에 연결
-	h->first=node;//h->first는 새로 추가하는 노드에 연결
-	p->llink=node;//기존에 있던 노드 llink를 새로 추가할 노드에 연결 
+    if(p!=NULL)//이중 연결리스트에 기존 데이터가 있을때
+	{
+		node->rlink=p;//node rlink를 기존 p노드에 연결
+    	p->llink=node;//기존에 있던 노드 llink를 새로 추가할 노드에 연결 
+		node->llink=h;//node llink를 헤드노드에 연결
+		h->first=node;//h->first는 새로 추가하는 노드에 연결
+	}
+	else//이중 연결리스트에 기존 데이터가 없을 때
+	{
+		node->llink=h;
+		h->first=node;
 
-	h->first = node;//추가할 node를 h->first에 연결한다
-
+	}
     return 0;
 	
 }
@@ -242,9 +268,20 @@ int insertFirst(headNode* h, int key)
 /**
  * list의 첫번째 노드 삭제
  */
-int deleteFirst(headNode* h) {
-
-	return 0;
+int deleteFirst(headNode* h) 
+{ 
+	listNode* p = h->first; //연결리스트의 첫번째 노드 주소를 p에 대입
+    if (p == NULL)//연결리스트에 아무것도 없을 때
+    {
+        printf("It is empty\n");
+    }
+    else 
+    {    
+    h->first = p->rlink; //기존 첫 번째 node가 가리키고 있던 node를 첫 번째 노드로 지정
+    free(p); //기존 첫번째 노드를 동적할당에서 해제 시켜준다.
+    }
+    return 0;
+	
 }
 
 
@@ -252,7 +289,8 @@ int deleteFirst(headNode* h) {
 /**
  * 리스트의 링크를 역순으로 재 배치
  */
-int invertList(headNode* h) {
+int invertList(headNode* h) 
+{
 
 	return 0;
 }
@@ -260,7 +298,50 @@ int invertList(headNode* h) {
 
 
 /* 리스트를 검색하여, 입력받은 key보다 큰값이 나오는 노드 바로 앞에 삽입 */
-int insertNode(headNode* h, int key) {
+int insertNode(headNode* h, int key) 
+{
+	listNode* temp = (listNode*)malloc(sizeof(listNode)); //새로운 정보를 담을 노드 생성
+    listNode* p = h->first; //연결리스트의 첫번째 노드 주소를 p에 대입
+    temp->key = key;//입력 받은 숫자를 노드 key에 대입
+    temp->rlink = NULL;//아직 연결되는 노드는 없으므로 NULL 값으로 연결해준다.
+	temp->llink = NULL;//아직 연결되는 노드는 없으므로 NULL 값으로 연결해준다.
+    if (p != NULL) //연결리스트에 어떤 정보를 담고 있는 노드가 들어가 있을 때
+    {
+		if (temp->key <= p->key) //노드를 연결리스트에 넣으려고했는데 첫번째 노드에 있는 key값보다 temp->key값이 작을 때
+        {
+            temp->llink=h;//temp->llink를 헤드노드 주소에 지정해준다
+			h->first=temp;//temp의 주소를 h->first 에 대입하여 temp를 헤드노드로 지정해준다.
+			temp->rlink = p; //temp->rlink를 첫 번째 노드인 p의 주소에 연결
+			p->llink=temp;//기존 첫번째 노드의 llink를 temp 노드에 연결
+            return 0;
+        }
+		else
+		{
+        while (p->rlink != NULL)//p->link를 가리키는 값이 NULL값이 나올 때 까지 반복한다.  
+            {
+                if (p->rlink->key >= temp->key)//현재 p의노드에서 옆에 다음 노드의 키 값이 넣으려고하는 키값보다 크거나 같다면
+                {	
+					temp->rlink=p->rlink;//넣으려고 하는 rlink를 기존 p->rlink가 가리키는 노드와 연결시킨다
+					p->rlink->llink=temp;//기존 다음노드의 llink를 temp와 연결한다
+					temp->llink=p; //temp->llink를 기존 p와 연결한다
+					p->rlink=temp; //temp를 기존 p->rlink와 연결한다
+					return 0;
+                }
+                p = p->rlink; //p의 노드를 한 칸씩 움직인다
+            }
+         /* NULL값이 나올 때 까지 while문을 반복했음에도 기존에 있던 노드들의 키값이 넣으려고하는 키값보다 다 작을때*/
+        p->rlink = temp;//맨마지막에 있던 노드를 새로 추가시켜주는 노드에 연결시켜준다
+		temp->llink=p; //연결리스트 맨 뒤에 노드를 추가해준다.
+        return 0;
+		}
+	}
+
+
+    else//아직 연결리스트에 아무 정보가 없어서 들어가야 할 노드가 첫번째일때
+    {
+        temp->llink=h;//temp->llink가 헤드노드를 가리키게 한다
+		h->first=temp; //temp의 주소를 h->first에 대입하여 첫번째 헤드노드 first가 temp를 가리키게 한다.
+    }
 
 	return 0;
 }
