@@ -148,22 +148,22 @@ int freeList(headNode* h)
 }
 
 
-void printList(headNode* h) {
+void printList(headNode* h) {//이중연결리스트를 출력시켜주는 함수
 	int i = 0;
 	listNode* p;
 
 	printf("\n---PRINT\n");
 
-	if(h == NULL) {
+	if(h == NULL) {//리스트 안에 아무것도 없을 때
 		printf("Nothing to print....\n");
 		return;
 	}
 
 	p = h->first;
 
-	while(p != NULL) {
-		printf("[ [%d]=%d ] ", i, p->key);
-		p = p->rlink;
+	while(p != NULL) {//리스트 안에 뭔가 있을때
+		printf("[ [%d]=%d ] ", i, p->key); //key 값 연속해서 출력
+		p = p->rlink; //p 노드를 한칸 이동시켜준다
 		i++;
 	}
 
@@ -350,9 +350,59 @@ int insertNode(headNode* h, int key)
 /**
  * list에서 key에 대한 노드 삭제
  */
-int deleteNode(headNode* h, int key) {
+int deleteNode(headNode* h, int key) 
+{
+	listNode* p = h->first;
+    listNode* rpos=NULL;
+    if (p == NULL)//연결리스트에 아무것도 없을때
+    {
+        printf("It is empty\n");
+        return 0;
+    }
+
+    else
+    {
+        while (p->key!= key)//p->link를 가리키는 값이 NULL값이 나올 때 까지 반복한다.  
+        {
+			p = p->rlink; //p의 노드를 한 칸씩 움직인다
+		}
+        if (p->rlink==NULL) //삭제할 노드가 연결리스트에 마지막에 있을경우
+        {
+			if(p->llink==h)//삭제할 노드가 유일한 경우
+			{
+				h->first=NULL;
+				free(p);
+				return 0;
+			}
+			else//삭제할 노드가 유일하지 않는 경우
+			{
+				p->llink->rlink=NULL;
+				free(p);
+				return 0;
+            }
+		}
+		else if(p==h->first)//삭제할 노드가 첫 번째에 있을 경우
+        {
+			h->first=p->rlink;
+			p->rlink->llink=h;
+			free(p);
+			return 0;
+
+		}
+		else//삭제할 노드가 중간에 있을 경우
+		{ 
+			rpos=p; //삭제할 p의 주소를 포인터 변수 rpos에 넣어준다
+			p->rlink->llink=p->llink; //삭제할 노드 오른쪽 노드 llink를 삭제할 노드 왼쪽에 있는 노드와 연결
+			p->llink->rlink=p->rlink; //삭제할 노드 왼쪽 노드 rlink를 삭제할 노드 오른쪽에 있는 노드와 연결
+			free(rpos);
+			return 0;
+		}
+	}
+
+        printf("There is no correct key\n");
 
 	return 1;
 }
+
 
 
