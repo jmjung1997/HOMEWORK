@@ -293,16 +293,17 @@ int invertList(headNode* h)
 {   
 	listNode *p = h->first; //현재노드를 가리킨다.
     listNode* pre=NULL; //이전 노드를 가리킨다
-    listNode* next=NULL; //다음 노드를 가리킨다.
+	 listNode* next=NULL; //이전 노드를 가리킨다
     while (p != NULL) // 현재노드를 가리키는게 NULL값이 나오도록 반복한다
-    {
-        next = p->rlink;//next는 현재 p노드 다음 노드를 가리킨다
-        p->rlink=pre ;//현재노드의 랑크를 전 노드를 향하게 한다
-        pre= p; //pre를 현재노드를 가리키게 한다
-        p=next; //현재 p노드를 다음 노드를 가키게한다.
-    }
-    h->first= pre; //첫번째 헤드 노드를 pre가 향하는 노드로 설정한다. next와 p 둘다 NULL값이 되므로 남은 것은 pre가 가리키는 노드 밖에 없다.
-
+    {  
+		next = p->rlink;//next는 현재 p노드 다음 노드를 가리킨다
+		p->rlink=pre; //p->rlink를 전의 노드 주소에 연결
+		p->llink=p->rlink;//p->llink를 기존 rlink가 가리키는 것으로 바꿈
+		pre=p;//현재 노드 주소 pre변수에 저장
+		p=next;//p노드를 다음 노드로 이동
+	}
+	h->first=pre;//pre가 가리키는 노드부터 시작하겠다
+	   
     return 0;
 
 }
@@ -371,12 +372,16 @@ int deleteNode(headNode* h, int key)
         printf("It is empty\n");
         return 0;
     }
-
     else
     {
         while (p->key!= key)//p->link를 가리키는 값이 NULL값이 나올 때 까지 반복한다.  
         {
 			p = p->rlink; //p의 노드를 한 칸씩 움직인다
+			if(p==NULL) //연결리스트 끝까지 다 찾았는데 삭제 할 값이 없을 때
+			{
+				 printf("There is no correct key\n");
+				 return 1;
+			}
 		}
         if (p->rlink==NULL) //삭제할 노드가 연결리스트에 마지막에 있을경우
         {
@@ -409,9 +414,8 @@ int deleteNode(headNode* h, int key)
 			free(rpos);
 			return 0;
 		}
+		
 	}
-
-        printf("There is no correct key\n");
 
 	return 1;
 }
