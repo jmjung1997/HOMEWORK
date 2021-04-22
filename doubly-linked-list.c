@@ -290,9 +290,21 @@ int deleteFirst(headNode* h)
  * 리스트의 링크를 역순으로 재 배치
  */
 int invertList(headNode* h) 
-{
+{   
+	listNode *p = h->first; //현재노드를 가리킨다.
+    listNode* pre=NULL; //이전 노드를 가리킨다
+    listNode* next=NULL; //다음 노드를 가리킨다.
+    while (p != NULL) // 현재노드를 가리키는게 NULL값이 나오도록 반복한다
+    {
+        next = p->rlink;//next는 현재 p노드 다음 노드를 가리킨다
+        p->rlink=pre ;//현재노드의 랑크를 전 노드를 향하게 한다
+        pre= p; //pre를 현재노드를 가리키게 한다
+        p=next; //현재 p노드를 다음 노드를 가키게한다.
+    }
+    h->first= pre; //첫번째 헤드 노드를 pre가 향하는 노드로 설정한다. next와 p 둘다 NULL값이 되므로 남은 것은 pre가 가리키는 노드 밖에 없다.
 
-	return 0;
+    return 0;
+
 }
 
 
