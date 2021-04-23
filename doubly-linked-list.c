@@ -55,7 +55,7 @@ int main()
 	char command;
 	int key;
 	headNode* headnode=NULL;
-
+	printf("\nJeongjaemin   2018038067\n\n");
 	do{
 		printf("----------------------------------------------------------------\n");
 		printf("                     Doubly Linked  List                        \n");
