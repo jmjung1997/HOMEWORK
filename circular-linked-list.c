@@ -212,18 +212,62 @@ int insertLast(listNode* h, int key)
 /**
  * list의 마지막 노드 삭제
  */
-int deleteLast(listNode* h) {
+int deleteLast(listNode* h) 
+{    
+	listNode* p = h->rlink;//연결리스트의 첫번째 노드 주소를 p에 대입
+    if (p == h)//연결리스트에 아무것도 없을때
+    {
+        printf("It is empty\n");
+        return 0;
+    }
+    else if (p->rlink == h) //연결리스트에 마지막 노드가 한개 밖에 없을 때
+    {
+        h->rlink = h;//h->rlink를 헤드노드 주소로 가리키게 한다
+		h->llink = h;//h->llink를 헤드노드 주소로 가리키게 한다
+        free(p); // 마지막 노드를 메모리 할당 해제 시켜준다
 
+        return 0;
+    }
+    else
+    {
+        while (p->rlink!= h)//p->rlink를 가리키는 값이 헤드노드 주소값이 나올 때 까지 반복한다.  
+        {
+            p = p->rlink; //p를 마지막 노드상태로 이동한다
+        }
+      p->llink->rlink=h; //현재 p 이전 노드 rlink를 헤드노드 주소로 대입한다
+	  h->llink=p->llink;//h->llink를 현재 p 이전노드 주소에 연결한다
+        free(p); //마지막 노드를 메모리 할당을 해제 시켜준다.
+    }
+    return 1;
 
-	return 1;
 }
 
 
 /**
  * list 처음에 key에 대한 노드하나를 추가
  */
-int insertFirst(listNode* h, int key) {
-
+int insertFirst(listNode* h, int key) 
+{
+		
+    listNode* node = (listNode*)malloc(sizeof(listNode)); //노드를 동적할당 해준다.
+    listNode* p = h->rlink;//연결리스트의 첫번째 노드 주소를 p에 대입
+    node->key = key; //node의 키값 대입
+    node->rlink = node;//node의 rlink를 node 주소값으로 비워둔다
+	node->llink = node;//node의 llink를 node 주소값으로 비워둔다
+    if(p!=h)//이중 연결리스트에 기존 데이터가 있을때
+	{
+		node->rlink=p;//node rlink를 기존 p노드에 연결
+    	p->llink=node;//기존에 있던 노드 llink를 새로 추가할 노드에 연결 
+		node->llink=h;//node llink를 헤드노드에 연결
+		h->rlink=node;//h->first는 새로 추가하는 노드에 연결
+	}
+	else//이중 연결리스트에 기존 데이터가 없을 때
+	{
+		node->llink=h;// 새로 추가할 node->llink를 헤드 노드 주소값에 연결
+		node->rlink=h;//새로 추가할 node->rlink를 헤드 노드주소값에 연결
+		h->rlink=node;//h->rlink를 새로 추가할 node 주소에 연결
+		h->llink=node;//h->llink를 새로 추가할 node 주소에 연결
+	}
 
 	return 1;
 }
@@ -231,8 +275,19 @@ int insertFirst(listNode* h, int key) {
 /**
  * list의 첫번째 노드 삭제
  */
-int deleteFirst(listNode* h) {
-
+int deleteFirst(listNode* h)
+ {
+	listNode* p = h->rlink; //연결리스트의 첫번째 노드 주소를 p에 대입
+    if (p == h)//연결리스트에 아무것도 없을 때
+    {
+        printf("It is empty\n");
+    }
+    else //연결리스트에 무엇인가 있을 때
+    {    
+    h->rlink = p->rlink; //h->rlink를 p->rlink가 가리키는 주소로 지정한다
+	p->rlink->llink=h;//h->rlink->llink를 헤드주소로 지정한다
+    free(p); //기존 첫번째 노드를 동적할당에서 해제 시켜준다.
+    }
 
 	return 1;
 
