@@ -186,7 +186,8 @@ int insertLast(headNode* h, int key)
     if(p==NULL)//마지막에 노드 넣으려고 하는데 연결리스트에 아무것도 없을 때
     {       
       h->first = node; //h->first를 node 위치에 연결시킨다
-	  node->llink=h->first; //node->llink를 헤드노드에 연결시키다
+	  node->llink=h; //node->llink를 헤드노드에 연결시키다
+
 	}
     else //연결리스트에 무엇인가 들어있을 때
     {
