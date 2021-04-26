@@ -137,21 +137,21 @@ int freeList(listNode* h)
 
 
 
-void printList(listNode* h) {
+void printList(listNode* h) {//연결리스트를 출력하는 함수
 	int i = 0;
 	listNode* p;
 
 	printf("\n---PRINT\n");
 
-	if(h == NULL) {
+	if(h == NULL) {//연결리스트에 아무것도 없다면 아무것도 없다고 출력
 		printf("Nothing to print....\n");
 		return;
 	}
 
-	p = h->rlink;
+	p = h->rlink;//h->rlink가 가리키는 노드를 p로 지정
 
-	while(p != NULL && p != h) {
-		printf("[ [%d]=%d ] ", i, p->key);
+	while(p != NULL && p != h) {//p가 NULL 그리고 p가 헤드노드가 아닐때 반복
+		printf("[ [%d]=%d ] ", i, p->key);//키값을 출력한다
 		p = p->rlink;
 		i++;
 	}
@@ -161,12 +161,12 @@ void printList(listNode* h) {
 	/* print addresses */
 	printf("\n---checking addresses of links\n");
 	printf("-------------------------------\n");
-	printf("head node: [llink]=%p, [head]=%p, [rlink]=%p\n", h->llink, h, h->rlink);
+	printf("head node: [llink]=%p, [head]=%p, [rlink]=%p\n", h->llink, h, h->rlink);//헤드노드의 llink,h,rlink가 가리키는 값을 출력한다
 
 	i = 0;
 	p = h->rlink;
-	while(p != NULL && p != h) {
-		printf("[ [%d]=%d ] [llink]=%p, [node]=%p, [rlink]=%p\n", i, p->key, p->llink, p, p->rlink);
+	while(p != NULL && p != h) {//p가 NULL 그리고 p가 헤드노드가 아닐때 반복
+		printf("[ [%d]=%d ] [llink]=%p, [node]=%p, [rlink]=%p\n", i, p->key, p->llink, p, p->rlink); //p노드의 llink,h,rlink가 가리키는 값을 출력한다
 		p = p->rlink;
 		i++;
 	}
@@ -297,10 +297,30 @@ int deleteFirst(listNode* h)
 /**
  * 리스트의 링크를 역순으로 재 배치
  */
-int invertList(listNode* h) {
+int invertList(listNode* h) 
+{
+	listNode *p = h->rlink; //현재노드를 가리킨다.
+    listNode* pre=h; //이전 노드를 가리킨다
+	listNode* next=h; //이후 노드를 가리킨다
+	if(p ==h ) {//연결리스트에 아무것도 없다면 아무것도 없다고 출력
+		printf("Nothing to invert....\n");
+		return 0;
+	}
+	else
+	{
+    h->llink=p;//h->llink를 현재 p노드로 바꾼다
+	while (p != h) // 현재노드를 가리키는게 NULL값이 나오도록 반복한다
+    {  
+		next = p->rlink;//next는 현재 p노드 다음 노드를 가리킨다
+		p->llink=p->rlink;//p->llink를 기존 rlink가 가리키는 것으로 바꿈
+		p->rlink=pre; //p->rlink를 전의 노드 주소에 연결
+		pre=p;//현재 노드 주소 pre변수에 저장
+		p=next;//p노드를 다음 노드로 이동
+	}
+		h->rlink=pre;//pre가 가리키는 노드부터 시작하겠다
+	}
+    return 0;
 
-
-	return 0;
 }
 
 
@@ -308,7 +328,56 @@ int invertList(listNode* h) {
 /**
  *  리스트를 검색하여, 입력받은 key보다 큰값이 나오는 노드 바로 앞에 삽입 
  **/
-int insertNode(listNode* h, int key) {
+int insertNode(listNode* h, int key) 
+{
+	listNode* temp = (listNode*)malloc(sizeof(listNode)); //새로운 정보를 담을 노드 생성
+    listNode* p = h->rlink; //연결리스트의 첫번째 노드 주소를 p에 대입
+    temp->key = key;//입력 받은 숫자를 노드 key에 대입
+    temp->rlink = temp;//아직 연결되는 노드는 없으므로 헤드주소 값으로 연결해준다.
+	temp->llink = temp;//아직 연결되는 노드는 없으므로 헤드주소 값으로 연결해준다.
+    if (p != h) //연결리스트에 어떤 정보를 담고 있는 노드가 들어가 있을 때
+    {
+		if (temp->key <= p->key) //노드를 연결리스트에 넣으려고했는데 첫번째 노드에 있는 key값보다 temp->key값이 작을 때
+        {
+            temp->llink=h;//temp->llink를 헤드노드 주소에 지정해준다
+			h->rlink=temp;//temp의 주소를 h->rlink 에 대입하여 h->rlink를 temp와 연결시킨다
+			temp->rlink = p; //temp->rlink를 첫 번째 노드인 p의 주소에 연결
+			p->llink=temp;//기존 첫번째 노드의 llink를 temp 노드에 연결
+            return 0;
+        }
+		else
+		{
+        while (p->rlink != h)//p->link를 가리키는 값이 NULL값이 나올 때 까지 반복한다.  
+            {
+                if (p->rlink->key >= temp->key)//현재 p의노드에서 옆에 다음 노드의 키 값이 넣으려고하는 키값보다 크거나 같다면
+                {	
+					temp->rlink=p->rlink;//넣으려고 하는 rlink를 기존 p->rlink가 가리키는 노드와 연결시킨다
+					p->rlink->llink=temp;//기존 다음노드의 llink를 temp와 연결한다
+					temp->llink=p; //temp->llink를 기존 p와 연결한다
+					p->rlink=temp; //temp를 기존 p->rlink와 연결한다
+					return 0;
+                }
+                p = p->rlink; //p의 노드를 한 칸씩 움직인다
+            }
+         /* NULL값이 나올 때 까지 while문을 반복했음에도 기존에 있던 노드들의 키값이 넣으려고하는 키값보다 다 작을때*/
+        p->rlink = temp;//맨마지막에 있던 노드 rlink를 새로 추가시켜주는 노드에 연결시켜준다
+		temp->llink=p; //temp->llink를 기존 마지막에 있던 노드 p에 연결시켜준다
+		temp->rlink=h;//temp->rlink를 헤드노드 주소에 연결한다
+		h->llink=temp;//h->llink를 가리키는 값을 temp에 연결한다
+        return 0;
+		}
+	}
+
+
+    else//아직 연결리스트에 아무 정보가 없어서 들어가야 할 노드가 첫번째일때
+    {
+        temp->llink=h;//temp->llink가 헤드노드를 가리키게 한다
+		temp->rlink=h;//temp->rlink가 헤드노드를 가리키게 한다
+		h->rlink=temp; //temp의 주소를 h->first에 대입하여 첫번째 헤드노드 first가 temp를 가리키게 한다.
+		h->llink=temp;//h->llink를 temp 주소에 연결시킨다
+    
+	
+	}
 
 	return 0;
 }
@@ -317,7 +386,61 @@ int insertNode(listNode* h, int key) {
 /**
  * list에서 key에 대한 노드 삭제
  */
-int deleteNode(listNode* h, int key) {
+int deleteNode(listNode* h, int key)
+{
+	listNode* p = h->rlink;
+    listNode* rpos=NULL;
+    if (p == h)//연결리스트에 아무것도 없을때
+    {
+        printf("It is empty\n");
+        return 0;
+    }
+    else//연결리스트에 뭔가 있을 때
+    {
+        while (p->key!= key)//p->link를 가리키는 값이 NULL값이 나올 때 까지 반복한다.  
+        {
+			p = p->rlink; //p의 노드를 한 칸씩 움직인다
+			if(p==h) //연결리스트 끝까지 다 찾았는데 삭제 할 값이 없을 때
+			{
+				 printf("There is no correct key\n");
+				 return 1;
+			}
+		}
+        if (p->rlink==h) //삭제할 노드가 연결리스트에 마지막에 있을경우
+        {
+			if(p->llink==h)//삭제할 노드가 유일한 경우
+			{
+				h->rlink=h;//h->rlink를 자기 주소를 가리키게 한다
+				h->llink=h;//h->llink를 자기 주소를 가리키게 한다
+				free(p);
+				return 0;
+			}
+			else//삭제할 노드가 유일하지 않는 경우
+			{
+				p->llink->rlink=h; //삭제할 전 노드의 rlink를 헤드노드에 연결
+				h->llink=p->llink; //h->llink를 삭제할 전 노드에 연결
+				free(p);
+				return 0;
+            }
+		}
+		else if(p==h->rlink)//삭제할 노드가 첫 번째에 있을 경우
+        {
+			h->rlink=p->rlink; //h->rlink를 p다음노드에 연결
+			p->rlink->llink=h;// p다음노드의 llink를 헤드노드에 연결
+			free(p);
+			return 0;
+
+		}
+		else//삭제할 노드가 중간에 있을 경우
+		{ 
+			rpos=p; //삭제할 p의 주소를 포인터 변수 rpos에 넣어준다
+			p->rlink->llink=p->llink; //삭제할 노드 오른쪽 노드 llink를 삭제할 노드 왼쪽에 있는 노드와 연결
+			p->llink->rlink=p->rlink; //삭제할 노드 왼쪽 노드 rlink를 삭제할 노드 오른쪽에 있는 노드와 연결
+			free(rpos);
+			return 0;
+		}
+		
+	}
 
 	return 0;
 }
