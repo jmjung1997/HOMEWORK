@@ -294,12 +294,12 @@ int invertList(headNode* h)
 {   
 	listNode *p = h->first; //현재노드를 가리킨다.
     listNode* pre=NULL; //이전 노드를 가리킨다
-	 listNode* next=NULL; //이전 노드를 가리킨다
+	 listNode* next=NULL; //이후 노드를 가리킨다
     while (p != NULL) // 현재노드를 가리키는게 NULL값이 나오도록 반복한다
     {  
 		next = p->rlink;//next는 현재 p노드 다음 노드를 가리킨다
-		p->rlink=pre; //p->rlink를 전의 노드 주소에 연결
 		p->llink=p->rlink;//p->llink를 기존 rlink가 가리키는 것으로 바꿈
+		p->rlink=pre; //p->rlink를 전의 노드 주소에 연결
 		pre=p;//현재 노드 주소 pre변수에 저장
 		p=next;//p노드를 다음 노드로 이동
 	}
