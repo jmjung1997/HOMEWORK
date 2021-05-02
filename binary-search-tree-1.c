@@ -110,7 +110,7 @@ int main()
 	return 1;
 }
 
-int initializeBST(Node** h) {
+int initializeBST(Node** h) {//초기화 함수
 
 	/* if the tree is not empty, then remove all allocated nodes from the tree*/
 	if(*h != NULL)
@@ -202,7 +202,46 @@ int insert(Node* head, int key)//트리에 데이터를 삽입하는 함수
 
 int deleteLeafNode(Node* head, int key)
 {
-
+	Node *ptr=head->left;//head->left를 ptr노드에 대입한다
+	Node *parent=NULL;
+	while (ptr!=NULL)//ptr이 NULL이 나올 때 까지 반복한다
+	{	
+		if (key == ptr->key)// key 값과 해당하는 노드의 key 값이 일치할 때
+		{
+			 break;//while 반복문 탈출
+		}
+		else if (key < ptr->key)// key 값이 노드가 가지고 있는 key값 보다 작을 때
+		{
+			parent=ptr;//ptr 옮기기 전에 부모노드에 현재노드 주소 저장
+			ptr = ptr->left; //ptr의 노드를 ptr의 왼쪽 자식 노드로 옮긴다
+		}
+		else// key 값이 노드가 가지고 있는 key값 보다 클 때
+		{
+			parent=ptr;//ptr 옮기기 전에 부모노드에 현재노드 주소 저장
+			ptr = ptr->right;//ptr의 노드를 ptr의 오른쪽 자식 노드로 옮긴다
+		}
+	}
+	if(ptr==NULL)//반복문을 돌려 해당하는 key값을 가지고 있는 노드를 찾지 못했을때
+	{
+		printf("\n There is no correct data\n");
+	}
+	else if(ptr->left==NULL&&ptr->right==NULL)//마지막 leaf노드일때
+	{	
+		if(ptr->key<parent->key)//제거할 ptr의 위치가 부모노드 왼쪽에 있을때
+		{
+			parent->left=NULL;//부모노드 왼쪽을 NULL값으로 연결한다
+		}
+		else//제거할 ptr의 위치가 부모노드 오른쪽에 있을때
+		{
+			parent->right=NULL;//부모노드 오른쪽을 NULL값으로 연결한다
+		}
+		free(ptr);//해당노드를 메모리 할당해제 시킨다
+	}
+	else//key값과 일치하는 node를 찾았지만 leaf노드가 아니었을 때
+	{
+		printf("\n node [%d] is not a leaf\n", ptr->key);
+	}
+	return 0;
 }
 
 Node* searchRecursive(Node* ptr, int key)//recursive를 통하여 해당하는 노드 주소 찾는 함수
@@ -248,15 +287,24 @@ Node* searchIterative(Node* head, int key)//iterative를 통하여 해당하는 
 
 
 int freeBST(Node* head) //메모리 할당을 해제시켜주는 함수
-{
-	
-
+{ /*후위 순회 방식으로 메모리해제 시켜준다*/
+	Node* ptr = head;
+	if(ptr!=NULL)//ptr이 NULL일 때 까지 반복
+	{
+		freeBST(ptr->left);//자신의 함수에 ptr->left의 주소를 보내 재귀함수를 호출한다
+		if(ptr->right!=head)//ptr이 head노드일경우 이 과정을 생략한다
+		{
+			freeBST(ptr->right);//자신의 함수에 ptr->right의 주소를 보내 재귀함수를 호출한다
+		}
+		free(ptr);//현재 노드를 메모리 할당해제 시켜준다
+		ptr=NULL;//ptr의 포인터 변수 NULL값으로 지정
+	}
+	else//이미 비어 있을 때
+	{
+		printf("This is arleady empty\n");
+	}	
     return 0;
-
-
 }
-
-
 
 
 
