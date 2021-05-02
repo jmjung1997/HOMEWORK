@@ -289,6 +289,7 @@ Node* searchIterative(Node* head, int key)//iterative를 통하여 해당하는 
 int freeBST(Node* head) //메모리 할당을 해제시켜주는 함수
 { /*후위 순회 방식으로 메모리해제 시켜준다*/
 	Node* ptr = head;
+	
 	if(ptr!=NULL)//ptr이 NULL일 때 까지 반복
 	{
 		freeBST(ptr->left);//자신의 함수에 ptr->left의 주소를 보내 재귀함수를 호출한다
@@ -299,10 +300,6 @@ int freeBST(Node* head) //메모리 할당을 해제시켜주는 함수
 		free(ptr);//현재 노드를 메모리 할당해제 시켜준다
 		ptr=NULL;//ptr의 포인터 변수 NULL값으로 지정
 	}
-	else//이미 비어 있을 때
-	{
-		printf("This is arleady empty\n");
-	}	
     return 0;
 }
 
