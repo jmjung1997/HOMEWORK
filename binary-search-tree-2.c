@@ -49,9 +49,7 @@ int freeBST(Node* head); /* free all memories allocated to the tree */
 
 /* you may add your own defined functions if necessary */
 
-
 void printStack();
-
 
 
 int main()
@@ -117,7 +115,7 @@ int main()
 	return 1;
 }
 
-int initializeBST(Node** h) {
+int initializeBST(Node** h) {//초기화 함수
 
 	/* if the tree is not empty, then remove all allocated nodes from the tree*/
 	if(*h != NULL)
@@ -138,7 +136,7 @@ int initializeBST(Node** h) {
 
 
 
-void recursiveInorder(Node* ptr)
+void recursiveInorder(Node* ptr)//후위 순회법 재귀함수
 {
 	if(ptr) {
 		recursiveInorder(ptr->left);
@@ -194,14 +192,14 @@ void levelOrder(Node* ptr)//레벨 순회 트리 순회
 }
 
 
-int insert(Node* head, int key)
+int insert(Node* head, int key)//삽입하는 함수
 {
 	Node* newNode = (Node*)malloc(sizeof(Node));
 	newNode->key = key;
 	newNode->left = NULL;
 	newNode->right = NULL;
 
-	if (head->left == NULL) {
+	if (head->left == NULL) {//루트 노드에 넣는다
 		head->left = newNode;
 		return 1;
 	}
@@ -244,6 +242,7 @@ int deleteNode(Node* head, int key)
 	Node *parent=NULL;
 	Node *child=NULL;
 	Node *least_r=NULL;//두 개의 서브 트리 나올 때 오른쪽 중에서 가장 작은 노드
+	Node *least_rparent=NULL;//두 개의 서브 트리 나올 때 오른쪽 중에서 가장 작은 노드의 부모노드
 	while (ptr!=NULL)//ptr이 NULL이 나올 때 까지 반복한다
 	{	
 		if (key == ptr->key)// key 값과 해당하는 노드의 key 값이 일치할 때
@@ -279,58 +278,86 @@ int deleteNode(Node* head, int key)
 	}
 	else if(ptr->left==NULL||ptr->right==NULL) // 하나의 서브 트리만 있을때
 	{	
-		child = (ptr->left != NULL) ? ptr->left : ptr->right;
-    	if (parent)
+		child = (ptr->left != NULL) ? ptr->left : ptr->right;//삭제하고자 하는 ptr노드의 자식 노드 NUll값이 아닌 오른쪽 또는 왼쪽 노드를 child에 대입한다 
+    	if (parent)//부모노드가 루트 노드가 아닐때
     	{
-      		if (parent->left == ptr)
-        		parent->left = child;
-      		else
-        		parent->right = child;
-				free(ptr);
+      		if (parent->left == ptr)//삭제하고자하는 노드가 부모노드의 왼쪽에 있을때
+        		parent->left = child;//부모노드 왼쪽을 child와 연결
+      		else//삭제하고자하는 노드가 부모노드의 오른쪽에 있을때
+        		parent->right = child;//부모노드 오른쪽을 child와 연결
+			
     	}
-		else//부모노드가 NULL이면 삭제되는 노드가 루트 노드이다
+		else//부모노드가 루트 노드일때
 		{	
-			head->left=(ptr->left != NULL) ? ptr->left : ptr->right;
+			head->left=(ptr->left != NULL) ? ptr->left : ptr->right;			
 		} 
+		free(ptr);
 	}
 	else// 두 개의 서브 트리가 있을 때
 	{
-		least_r=ptr->right;
-		while (least_r!=NULL)//ptr이 NULL이 나올 때 까지 반복한다
+		least_rparent=ptr;//삭제할 ptr을 rparent에 대입
+		least_r=ptr->right;//오른쪽 트리 중 최소 값을 가지고 있는 노드 변수
+		while (least_r->left!=NULL)//least_r->left가 NULL이 나올 때 까지 반복한다
 		{	
-			parent=ptr;//ptr 옮기기 전에 부모노드에 현재노드 주소 저장
-			least_r = least_r->left; //ptr의 노드를 ptr의 왼쪽 자식 노드로 옮긴다
+			least_rparent=least_r;//least_r 옮기기 전에 least_rparent에 현재노드 저장해서 부모노드로 만들어준다
+			least_r = least_r->left; //least_r 의 노드를 least_r 의 왼쪽 자식 노드로 옮긴다
 		}
-		parent = (ptr->key<parent->key) ? parent->left : ptr->right; 
-
+		if (least_rparent->left == least_r)//least_rparent->left == least_r이 일치하면
+        	{
+			 least_rparent->left = least_r->right;//least_r가 오른쪽 트리를 가지고 있을 수도 있기에 오른쪽과 연결시킨다
+			}
+		else //ptr->right가 왼쪽 트리가 하나도 없어 ptr->right가 오른쪽 트리 중 가장 작을 때
+        	{
+			 least_rparent->right = least_r->right; //least_r의 오른쪽을 부모노드 오른쪽과 연결시킨다
+			}
+		/*오른쪽에서 가장 작은 노드 least_r을 찾았고 후속조치로 least_r 부모노드와 자식노드를 서로 연결 시켜주었으므로
+		이제는 least_r을 삭제하고자하는 ptr의 노드 자리와 바꿔준다*/
+		if (parent)//루트노드가 아닐때
+		{
+			if(ptr->key<parent->key)//제거할 ptr의 위치가 부모노드 왼쪽에 있을때
+			{
+				parent->left=least_r;//least_r을 부모노드 왼쪽과 연결한다
+			}
+			else//제거할 ptr의 위치가 부모노드 오른쪽에 있을때
+			{
+				parent->right=least_r;//least_r을 부모노드 오른쪽과 연결한다
+			}
+		}
+		else //루트 노드일때
+		{
+			head->left=least_r;//루트노드를 least_r로 한다
+			least_r->left=ptr->left;//least_r노드의 left를 기존 루트노드의 left를 가리켰던 노드에 연결한다
+		}
+		free(ptr);//동적할당 해제한다
 	}
 	return 0;
 }
 
 
-void freeNode(Node* ptr)
+void freeNode(Node* ptr)//동적할당 해제함수
 {
-	if(ptr) {
-		freeNode(ptr->left);
-		freeNode(ptr->right);
-		free(ptr);
+	if(ptr)//ptr이 NULL이 아닐때 후위순회로 동적할당을 해제한다
+	 {
+		freeNode(ptr->left);//ptr이 NULL이 나올때 까지 왼쪽으로 이동한다
+		freeNode(ptr->right);//ptr->right로 이동한다
+		free(ptr);//동적할당 해제시켜준다
 	}
 }
 
 int freeBST(Node* head)
 {
 
-	if(head->left == head)
+	if(head->left == head)//동적할당 해제함수
 	{
-		free(head);
+		free(head);//헤드노드를 동적할당 해제시켜준다
 		return 1;
 	}
 
 	Node* p = head->left;
 
-	freeNode(p);
+	freeNode(p);//freeNode함수를 호출하여 후위순회법으로 동적할당 해제시켜준다
 
-	free(head);
+	free(head);//헤드노드를 동적할당 해제시켜준다
 	return 1;
 }
 
@@ -369,10 +396,10 @@ void enQueue(Node* aNode) //큐에 노드를 추가한다
 	queue[++rear]=aNode; //큐 뒤 부터 넣어준다
 }
 
-
 void printStack()
 {
-
+	
 }
+
 
 
