@@ -59,6 +59,7 @@ int main()
 	Node* head = NULL;
 
 	do{
+		printf("\nJeong jaemin    2018038067\n\n");
 		printf("\n\n");
 		printf("----------------------------------------------------------------\n");
 		printf("                   Binary Search Tree #2                        \n");
