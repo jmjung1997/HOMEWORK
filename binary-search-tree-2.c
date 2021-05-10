@@ -310,23 +310,30 @@ int deleteNode(Node* head, int key)
         	{
 			 least_rparent->right = least_r->right; //least_r의 오른쪽을 부모노드 오른쪽과 연결시킨다
 			}
+
 		/*오른쪽에서 가장 작은 노드 least_r을 찾았고 후속조치로 least_r 부모노드와 자식노드를 서로 연결 시켜주었으므로
 		이제는 least_r을 삭제하고자하는 ptr의 노드 자리와 바꿔준다*/
+
 		if (parent)//루트노드가 아닐때
 		{
 			if(ptr->key<parent->key)//제거할 ptr의 위치가 부모노드 왼쪽에 있을때
 			{
 				parent->left=least_r;//least_r을 부모노드 왼쪽과 연결한다
+				least_r->left=ptr->left;//least_r노드의 left를 기존 루트노드의 left를 가리켰던 노드에 연결한다
+				least_r->right=ptr->right;//least_r노드의 right를 기존 루트노드의 right를 가리켰던 노드에 연결한다
 			}
 			else//제거할 ptr의 위치가 부모노드 오른쪽에 있을때
 			{
 				parent->right=least_r;//least_r을 부모노드 오른쪽과 연결한다
+				least_r->left=ptr->left;//least_r노드의 left를 기존 루트노드의 left를 가리켰던 노드에 연결한다
+				least_r->right=ptr->right;//least_r노드의 right를 기존 루트노드의 right를 가리켰던 노드에 연결한다
 			}
 		}
 		else //루트 노드일때
 		{
 			head->left=least_r;//루트노드를 least_r로 한다
 			least_r->left=ptr->left;//least_r노드의 left를 기존 루트노드의 left를 가리켰던 노드에 연결한다
+			least_r->right=ptr->right;//least_r노드의 right를 기존 루트노드의 right를 가리켰던 노드에 연결한다
 		}
 		free(ptr);//동적할당 해제한다
 	}
