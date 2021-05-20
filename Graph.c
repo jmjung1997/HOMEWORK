@@ -22,9 +22,9 @@ typedef struct
 
 void initilizeGraph(Graph* g);
 void printGraph(Graph* g);
-void insertvertex(Graph* g, int n);
+void insertvertex(Graph* g);
 void insertEdge(Graph* g, int v1, int v2);
-void freeGraph(Graph* g);
+//void freeGraph(Graph* g);
 
 
 
@@ -46,20 +46,20 @@ int main()
 		printf("----------------------------------------------------------------\n");
 
 		printf("Command = ");
-		scanf_s(" %c", &command);
+		scanf(" %c", &command);
 
 		switch (command) {
 		case 'z': case 'Z':
-			initilizeGraph(&G);
+			initilizeGraph(G);
 			break;
 		case 'i': case 'I':
-			insertvertex(&G, G->n);
+			insertvertex(G);
 			break;
 		case 'e': case 'E':
-			printf("연결시킬 노드를 입력하세요: (v1, v2)");
-			scanf_s(" %d", &n1);
-			scanf_s(" %d", &n2);
-			insertEdge(&G, n1, n2);
+			printf("put connect vertex: (v1, v2)");
+			scanf(" %d", &n1);
+			scanf(" %d", &n2);
+			insertEdge(G, n1, n2);
 			break;
 
 			/*case 'n': case 'N':
@@ -77,6 +77,7 @@ int main()
 				break;
 			case 't': case 'T':
 				deleteFirst(headnode);
+
 				break;
 			case 'r': case 'R':
 				invertList(headnode);
@@ -95,37 +96,37 @@ int main()
 }
 
 
-void initilizeGraph(Graph** g)
+void initilizeGraph(Graph*g)
 {
-	(*g)->n = 0;
+	g->n = 0;
 	for (int n = 0; n < MAX_VERTEX; n++)
 	{
-		(*g)->graph[n] = NULL;
+		g->graph[n] = NULL;
 	}
 
 }
 
-void insertvertex(Graph** g, int n)
+void insertvertex(Graph*g)
 {
-	if ((((*g)->n) + 1) > MAX_VERTEX)
+	if (g->n  >= MAX_VERTEX)
 	{
-		printf("\n정점의 개수를 초과하였습니다.\n");
+		printf("\nover number of vertex .\n");
 		return;
 	}
-	(*g)->n++;
-
+	g->n++;
+	printf("number of vertex: %d\n",g->n);
 }
 
-void insertEdge(Graph** g, int v1, int v2)
+void insertEdge(Graph* g, int v1, int v2)
 {
 	Node* vertexnode;
-	if (v1 >= (*g)->n || v2 >= (*g)->n)
+	if (v1 >= g->n || v2 >= g->n)
 	{
-		printf("\n 그래프에 없는 정점입니다.\n");
+		printf("\nThere are no vertices to fit in..\n");
 		return;
 	}
 	vertexnode = (Node*)malloc(sizeof(Node));
 	vertexnode->vertex = v2;
-	vertexnode->next = (*g)->graph[v1];
-	(*g)->graph[v1] = vertexnode;
+	vertexnode->next = g->graph[v1];
+	g->graph[v1] = vertexnode;
 }
