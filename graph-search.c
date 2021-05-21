@@ -94,10 +94,10 @@ int main()
 }
 
 
-void initilizeGraph(Graph*g)
+void initilizeGraph(Graph*g)//초기화 함수
 {
-	g->n = 0;
-	for (int n = 0; n < MAX_VERTEX; n++)
+	g->n = 0;//vertex 갯수 0
+	for (int n = 0; n < MAX_VERTEX; n++)//인접리스트 배열 NULL 값으로 초기화
 	{
 		g->nearlist[n] = NULL;
 	}
