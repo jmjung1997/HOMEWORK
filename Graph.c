@@ -4,6 +4,7 @@
 /* 필요한 헤더파일 추가 if necessary */
 
 # define MAX_VERTEX 10
+#define stack_size 10
 typedef struct node
 {
 	int vertex;
@@ -24,8 +25,15 @@ void initilizeGraph(Graph* g);
 void printGraph(Graph* g);
 void insertvertex(Graph* g);
 void insertEdge(Graph* g, int v1, int v2);
-//void freeGraph(Graph* g);
 
+void DFS(Graph* g, int v);
+void freeGraph(Graph* g);
+
+/*DFS에 필요한 함수*/
+void push(int n) ;
+int pop();
+int stack[stack_size] = { 0, };
+int top = -1;
 
 
 int main()
@@ -34,7 +42,7 @@ int main()
 	int n1, n2;
 	Graph* G = (Graph*)malloc(sizeof(Graph));
 
-	printf("\n정재민      2018038067\n\n");
+	printf("\nJeongjaemin      2018038067\n\n");
 	do {
 		printf("----------------------------------------------------------------\n");
 		printf("                        Graph  List                        \n");
@@ -60,6 +68,7 @@ int main()
 			scanf(" %d", &n1);
 			scanf(" %d", &n2);
 			insertEdge(G, n1, n2);
+			insertEdge(G, n2, n1);
 			break;
 
 			/*case 'n': case 'N':
@@ -129,4 +138,50 @@ void insertEdge(Graph* g, int v1, int v2)
 	vertexnode->vertex = v2;
 	vertexnode->next = g->graph[v1];
 	g->graph[v1] = vertexnode;
+}
+
+
+
+void DFS(Graph* g, int v) {
+   for (int i = 0; i < MAX_VERTEX; i++)
+    {
+      g->visited[i] = 0;       
+   	}
+   graph_node* w;           
+   push(v);   
+   g->visited[v] = 1;      
+   printf("%d", v);
+
+   while (is_empty() != 1) {
+      v = pop();
+      w = g->adj_list[v];      
+
+      while (w) {
+         if (g->visited[w->vertex] == 0) {         
+            push(v);
+            push(w->vertex);
+            g->visited[w->vertex] = 1;
+            printf("%3d", w->vertex);
+            v = w->vertex;
+            w = g->adj_list[v];
+         }
+         else w = w->link;        
+      }
+   }
+}
+
+void push(int n) {
+   if (is_full() == 1) {
+      fprintf(stderr, "스택이 가득 찼습니다");
+      return;
+   }
+   stack[++top] = n;
+}
+
+int pop() {
+   if (is_empty() == 1) {
+      fprintf(stderr, "스택이 비었습니다");
+      return 0;
+   }
+   return stack[top--];
 }
