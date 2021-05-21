@@ -75,6 +75,11 @@ int main()
 			insertEdge(G, n1, n2);
 			insertEdge(G, n2, n1);
 			break;
+		case 'd': case 'D':
+			printf("Start number = ");
+			scanf_s("%d", &v);
+			DFS(G, v);
+			break;
 		case 'p': case 'P':
 				Print_Graph(G); 
 				break;
@@ -230,15 +235,17 @@ int is_full() {//가득차 있는지 체크하는 함수
    return 0;//그렇치 않으면 0을 반환
 }
 
-void Print_Graph(Graph* g) 
+void Print_Graph(Graph* g)//그래프 출력함수
 {
-	Node *p;
-    for (int i = 0; i < g->n; i++) {
-      printf("vertex %d의 인접리스트: ", i);
-      p = g->nearlist[i];
-      while (p != NULL) {               //p가 NULL을 가리킬때까지 반복
+	Node *p;//노드를 담을 포인터변수
+    for (int i = 0; i < g->n; i++)//vertex 갯수 만큼 반복한다
+	 {
+      printf("adjlist of vertex %d: ", i);//vertex출력
+      p = g->nearlist[i];//해당 vertex의 인접노드 p에 대입
+      while (p != NULL) {  //해당 vertex에 인접노드 NULL값이 나올때까지 반복
          printf(", %d", p->vertex);
-         p = p->next;               //다음 노드로 이동
+         p = p->next;       //다음 노드로 이동
       }
       printf("\n");
+	}
 }
