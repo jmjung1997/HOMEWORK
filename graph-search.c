@@ -43,7 +43,7 @@ void Print_Graph();
 
 
 /*BFS에 필요한 함수*/
-void BFS(int v);
+void BFS(Graph* g,int v);
 int queue[MAX_QUEUE_SIZE];
 int front = -1;
 int rear = -1;
@@ -74,7 +74,8 @@ int main()
 		printf("Command = ");
 		scanf(" %c", &command);
 
-		switch (command) {
+		switch (command) 
+		{
 		case 'z': case 'Z':
 			initilizeGraph(G);
 			break;
@@ -83,8 +84,8 @@ int main()
 			break;
 		case 'b': case 'B':
 			printf("Start number = ");
-			scanf(" %d", &v2);
-			BFS(G, v2);
+			scanf(" %d", &v);
+			BFS(G, v);			
 			break;
 		case 'e': case 'E':
 			printf("Enter the vertices to connect only once: (v1, v2) ");
@@ -152,7 +153,7 @@ void insertEdge(Graph* g, int v1, int v2)
 		{
 			vertexnode->next = g->nearlist[v1]; //vertexnode->next를 원래 첫번째 인접 노드에 연결시킨다
 			g->nearlist[v1] = vertexnode;//첫번째 인접 노드를 vertexnode로 지정한다
-			return 0;
+			return ;
 		}
 		else//인접리스트 첫번째노드가 추가하려는 vertex보다 작을때
 		{
@@ -162,14 +163,14 @@ void insertEdge(Graph* g, int v1, int v2)
 				{
 					vertexnode->next = sort->next;
 					sort->next = vertexnode;
-					return 0;
+					return ;
 				}
 				sort = sort->next; //sort 노드를 한 칸씩 움직인다
 			}
 
 			sort->next = vertexnode;//vertex노드를 맨마지막에 삽입한다
 			vertexnode->next = NULL;
-			return 0;
+			return ;
 		}
 	}
 
@@ -179,7 +180,7 @@ void insertEdge(Graph* g, int v1, int v2)
 		g->nearlist[v1] = vertexnode;
 	}
 
-	return 0;
+	return ;
 }
 
 
@@ -223,7 +224,6 @@ void DFS(Graph* g, int v)//깊이우선탐색
 	}
 }
 
-
 void BFS(Graph* g, int v)//너비 우선 탐색
 {
 	Node* w;
@@ -247,7 +247,6 @@ void BFS(Graph* g, int v)//너비 우선 탐색
 		}
 	}
 }
-
 
 void push(int n)//스택 push함수
 {
