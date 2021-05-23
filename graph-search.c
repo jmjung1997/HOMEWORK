@@ -5,6 +5,8 @@
 
 # define MAX_VERTEX 10
 #define stack_size 10
+#define MAX_QUEUE_SIZE 11
+
 typedef struct node
 {
 	int vertex;
@@ -14,8 +16,8 @@ typedef struct node
 
 typedef struct
 {
+	int visit[MAX_VERTEX];
 	Node* nearlist[MAX_VERTEX];
-	int visit[MAX_VERTEX];   
 	int n;
 }Graph;
 
@@ -26,19 +28,31 @@ void printGraph(Graph* g);
 void insertvertex(Graph* g);
 void insertEdge(Graph* g, int v1, int v2);
 
-void DFS(Graph* g, int v);
 void freeGraph(Graph* g);
 
 /*DFS에 필요한 함수*/
-void push(int n) ;
+void DFS(Graph* g, int v);
+void push(int n);
 int pop();
 int stack[stack_size] = { 0, };
 int top = -1;
-int is_empty();
-int is_full();
+int queue_empty();
+int queue_full();
+
+
+void Print_Graph();
+
 
 /*BFS에 필요한 함수*/
-void Print_Graph();
+void BFS(int v);
+int queue[MAX_QUEUE_SIZE];
+int front = -1;
+int rear = -1;
+
+int deleteq();
+void enQueue(Node* aNode);
+
+  
 
 int main()
 {
@@ -77,8 +91,13 @@ int main()
 			break;
 		case 'd': case 'D':
 			printf("Start number = ");
-			scanf_s("%d", &v);
+			scanf(" %d", &v);
 			DFS(G, v);
+			break;
+		case 'b': case 'B':
+			printf("Start number = ");
+			scanf(" %d", &v);
+			BFS(G, v);
 			break;
 		case 'p': case 'P':
 				Print_Graph(G); 
@@ -168,18 +187,21 @@ void insertEdge(Graph* g, int v1, int v2)
 
 void DFS(Graph* g, int v)//깊이우선탐색
 {
-   for (int i = 0; i < MAX_VERTEX; i++)//방문체크 배열 모두 0으로 리셋
-    {
-      g->visit[i] = 0;       
-   	}
+  	for (int i = 0; i < MAX_VERTEX; i++) 
+		  {
+     		 g->visit[i] = 0;         //탐색한 정점 표시할 배열 모두 0으로 초기화
+  		 }
 
-   Node* d;           
-   push(v);//첫번째 입력받은 vertex 스택에 입력   
-   g->visit[v] = 1;//방문체크 배열을 1로 바꿔준다      
-   printf("%d", v);//v를 출력
+
+   	Node* d;      
+	push(v);   
+  	 g->visit[v] = 1;         //첫 방문 노드 1로 초기화
+  	 printf("%d", v);
+     
 
    while (is_empty() != 1) //Stack 비워질때까지 반복
    {
+	    
 		v = pop();//v를 pop();
       	d= g->nearlist[v];//vertex정점의 인접노드를 d에 대입      
 	 
@@ -187,20 +209,46 @@ void DFS(Graph* g, int v)//깊이우선탐색
 	  {
          if (g->visit[d->vertex] == 0) //노드를 한번도 방문한 적 없을 때
 		 {  
-			push(v);//V를 집어넣는다     
-            push(d->vertex);//V의 인접노드를 집어 넣는다
-            g->visit[d->vertex] = 1;//방문체크 배열을 1로 바꿔준다
-            printf("%3d", d->vertex);//d->vertex를 출력한다
-            v = d->vertex;//V를 현재 인접노드로 바꿔준다
-            d = g->nearlist[v];//현재 VERTEX에 대한 인접노드로 d를 지정한다
+			v = d->vertex;//V를 현재 인접노드로 바꿔준다
+			push(v);//V를 집어넣는다   
+			g->visit[v] = 1;//방문체크 배열을 1로 바꿔준다 
+			printf("%d", v);//v를 출력   
+			d = g->nearlist[v];//현재 VERTEX에 대한 인접노드로 d를 지정한다
          }
          else//노드가 방문한 적 있을 때
 		  {
-			  d= d->next;
+
+			  d= d->next; //다음 인접 정점으로 바꿔준다
 		  }        
 	  }
    }
 }
+
+
+void BFS(Graph* g,int v)
+{
+	Node* w;
+	 for (int i = 0; i < MAX_VERTEX; i++) 
+	 {
+      g->visit[i] = 0;         //방문한 vertex 배열 인덱스 모두 0으로 초기화
+   	}
+	printf("%5d", v); /* print */
+	g->visit[v] = 1;//방문체크 배열을 1로 바꿔준다   
+	addq(v); /* enqueue */
+	while (queue_empty() != 1) {
+	v = deleteq(); /* dequeue */
+	for (w=g->nearlist[v]; w; w=w->next)
+		{
+			if (!g->visit[w->vertex])
+			 {
+				printf("%5d", w->vertex);
+				addq(w->vertex);
+				g->visit[w->vertex] = 1;
+		}
+	}	
+	}
+}
+
 
 void push(int n)//스택 push함수
 {
@@ -228,11 +276,50 @@ int is_empty() {//스택이 비어있는지 체크하는 함수
 }
 
 
-int is_full() {//가득차 있는지 체크하는 함수
+int is_full() {//스택에서 가득차 있는지 체크하는 함수
    if (top >= stack_size - 1) { //가득차있으면 1을 반환     
       return 1;   
    }
    return 0;//그렇치 않으면 0을 반환
+}
+
+int queue_empty() {//큐가 비어 있는지 확인하는 함수
+   if (front == rear) {           
+      printf("\n큐가 비었습니다\n");
+      return 1;
+   }
+   return 0;
+}
+
+int queue_full() {      //큐가 가득차 있는지 체크하는 함수
+   if ((rear + 1) % MAX_QUEUE_SIZE == front) {         //큐가 꽉 찼으면 1 리턴
+      printf("큐가 꽉 찼습니다\n");
+      return 1;
+   }
+   return 0;
+}
+
+int deleteq() //큐에서 front의 값을 반환 하는 함수
+{
+   int val = 0;
+   if (queue_empty() == 1) {      //비었으면 탈출
+      return 1;
+   }
+   front = (front + 1) % MAX_QUEUE_SIZE;
+   val = queue[front];
+   return val;
+
+
+}
+void addq(int v)
+{	 
+	 if (queue_full() == 1)
+	  {      //꽉찼으면 탈출
+      return;
+   }
+   rear = (rear + 1) %MAX_QUEUE_SIZE;
+   queue[rear] = v;
+ //큐 뒤 부터 넣어준다
 }
 
 void Print_Graph(Graph* g)//그래프 출력함수
@@ -249,3 +336,4 @@ void Print_Graph(Graph* g)//그래프 출력함수
       printf("\n");
 	}
 }
+
