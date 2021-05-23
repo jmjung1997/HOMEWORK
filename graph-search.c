@@ -283,7 +283,7 @@ int is_full() {//스택에서 가득차 있는지 체크하는 함수
 
 int queue_empty() {//큐가 비어 있는지 확인하는 함수
 	if (front == rear) {
-		printf("\n큐가 비었습니다\n");
+		printf("\nQueue is empty\n");
 		return 1;
 	}
 	return 0;
@@ -291,7 +291,7 @@ int queue_empty() {//큐가 비어 있는지 확인하는 함수
 
 int queue_full() {      //큐가 가득차 있는지 체크하는 함수
 	if ((rear + 1) % MAX_QUEUE_SIZE == front) {         //큐가 꽉 찼으면 1 리턴
-		printf("큐가 꽉 찼습니다\n");
+		printf("Queue is full\n");
 		return 1;
 	}
 	return 0;
