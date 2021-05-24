@@ -60,6 +60,8 @@ int main()
 	Graph* G = (Graph*)malloc(sizeof(Graph));
 	int v;
 	int v2;
+	int vertex_number=0;
+
 	printf("\nJeongjaemin      2018038067\n\n");
 	do {
 		printf("\n----------------------------------------------------------------\n");
@@ -80,7 +82,9 @@ int main()
 			initilizeGraph(G);
 			break;
 		case 'i': case 'I':
-			insertvertex(G);
+			printf("number of vertex? : ");
+			scanf(" %d", &vertex_number);
+			insertvertex(G,vertex_number);
 			break;
 		case 'b': case 'B':
 			printf("Start number = ");
@@ -123,14 +127,17 @@ void initilizeGraph(Graph* g)//초기화 함수
 
 }
 
-void insertvertex(Graph* g)//vertex의 갯수를 정하는 함수
+void insertvertex(Graph* g, int r)//vertex의 갯수를 정하는 함수
 {
-	if (g->n >= MAX_VERTEX)//설정할 수 있는 vertex의 수를 초과할 때
+	for (int t = 0; t < r; t++)
 	{
-		printf("\nover number of vertex .\n");
-		return;
+		if (g->n >= MAX_VERTEX)//설정할 수 있는 vertex의 수를 초과할 때
+		{
+			printf("\nover number of vertex .\n");
+			return;
+		}
+		g->n++;//vertex갯수 한개를 늘린다
 	}
-	g->n++;//vertex갯수 한개를 늘린다
 	printf("number of vertex: %d\n", g->n);
 }
 
