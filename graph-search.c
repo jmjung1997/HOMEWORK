@@ -108,7 +108,7 @@ int main()
 		}
 
 	} while (command != 'q' && command != 'Q');
-	free(G);
+	freeGraph(G);
 	return 1;
 }
 
@@ -334,4 +334,21 @@ void Print_Graph(Graph* g)//그래프 출력함수
 		printf("\n");
 	}
 }
+
+void freeGraph(Graph* g)//동적할당 해제 함수
+{
+    Node *present, *next;//현재노드랑 다음노드 변수 
+    for(int i=0; i<g->n; ++i)//vetex의 개수 만큼 반복한다
+    {
+        present= g->nearlist[i];//첫 번째 vertex 인접노드를 present에 넣는다
+        while(present != NULL)//present가 NULL값이 나올때까지 반복한다
+        {
+            next = present->next;//현재노드의 옆노드
+            free(present);//현재노드 동적할당 해제
+           present=next;//다음노드를 현재노드로 지정한다
+        }   
+    }
+}
+
+
 
