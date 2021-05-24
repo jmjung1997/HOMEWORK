@@ -1,3 +1,4 @@
+
 #include<stdio.h>
 #include<stdlib.h>
 /* 필요한 헤더파일 추가 if necessary */
@@ -24,7 +25,7 @@ typedef struct
 
 void initilizeGraph(Graph* g);
 void printGraph(Graph* g);
-void insertvertex(Graph* g);
+void insertvertex(Graph* g, int r);
 void insertEdge(Graph* g, int v1, int v2);
 
 void freeGraph(Graph* g);
@@ -37,13 +38,14 @@ int stack[stack_size] = { 0, };
 int top = -1;
 int queue_empty();
 int queue_full();
-
+is_empty();
+is_full();
 
 void Print_Graph();
 
 
 /*BFS에 필요한 함수*/
-void BFS(Graph* g,int v);
+void BFS(Graph* g, int v);
 int queue[MAX_QUEUE_SIZE];
 int front = -1;
 int rear = -1;
@@ -59,8 +61,7 @@ int main()
 	int n1, n2;
 	Graph* G = (Graph*)malloc(sizeof(Graph));
 	int v;
-	int v2;
-	int vertex_number=0;
+	int vertex_number = 0;
 
 	printf("\nJeongjaemin      2018038067\n\n");
 	do {
@@ -76,7 +77,7 @@ int main()
 		printf("Command = ");
 		scanf(" %c", &command);
 
-		switch (command) 
+		switch (command)
 		{
 		case 'z': case 'Z':
 			initilizeGraph(G);
@@ -84,12 +85,12 @@ int main()
 		case 'i': case 'I':
 			printf("number of vertex? : ");
 			scanf(" %d", &vertex_number);
-			insertvertex(G,vertex_number);
+			insertvertex(G, vertex_number);
 			break;
 		case 'b': case 'B':
 			printf("Start number = ");
 			scanf(" %d", &v);
-			BFS(G, v);			
+			BFS(G, v);
 			break;
 		case 'e': case 'E':
 			printf("Enter the vertices to connect only once: (v1, v2) ");
@@ -160,7 +161,7 @@ void insertEdge(Graph* g, int v1, int v2)
 		{
 			vertexnode->next = g->nearlist[v1]; //vertexnode->next를 원래 첫번째 인접 노드에 연결시킨다
 			g->nearlist[v1] = vertexnode;//첫번째 인접 노드를 vertexnode로 지정한다
-			return ;
+			return;
 		}
 		else//인접리스트 첫번째노드가 추가하려는 vertex보다 작을때
 		{
@@ -170,14 +171,14 @@ void insertEdge(Graph* g, int v1, int v2)
 				{
 					vertexnode->next = sort->next;
 					sort->next = vertexnode;
-					return ;
+					return;
 				}
 				sort = sort->next; //sort 노드를 한 칸씩 움직인다
 			}
 
 			sort->next = vertexnode;//vertex노드를 맨마지막에 삽입한다
 			vertexnode->next = NULL;
-			return ;
+			return;
 		}
 	}
 
@@ -187,7 +188,7 @@ void insertEdge(Graph* g, int v1, int v2)
 		g->nearlist[v1] = vertexnode;
 	}
 
-	return ;
+	return;
 }
 
 
@@ -201,6 +202,7 @@ void DFS(Graph* g, int v)//깊이우선탐색
 
 
 	Node* d;
+	push(v);//초반에 스택에서 pop을 하여 처음 정점은 두번 넣어 스택에 남아있는 상태를 유지시켜준다
 	push(v);
 	g->visit[v] = 1;         //첫 방문 노드 1로 초기화
 	printf("%d", v);
@@ -219,7 +221,7 @@ void DFS(Graph* g, int v)//깊이우선탐색
 				v = d->vertex;//V를 현재 인접노드로 바꿔준다
 				push(v);//V를 집어넣는다   
 				g->visit[v] = 1;//방문체크 배열을 1로 바꿔준다 
-				printf("%d", v);//v를 출력   
+				printf("5%d", v);//v를 출력   
 				d = g->nearlist[v];//현재 VERTEX에 대한 인접노드로 d를 지정한다
 			}
 			else//노드가 방문한 적 있을 때
@@ -344,17 +346,17 @@ void Print_Graph(Graph* g)//그래프 출력함수
 
 void freeGraph(Graph* g)//동적할당 해제 함수
 {
-    Node *present, *next;//현재노드랑 다음노드 변수 
-    for(int i=0; i<g->n; ++i)//vetex의 개수 만큼 반복한다
-    {
-        present= g->nearlist[i];//첫 번째 vertex 인접노드를 present에 넣는다
-        while(present != NULL)//present가 NULL값이 나올때까지 반복한다
-        {
-            next = present->next;//현재노드의 옆노드
-            free(present);//현재노드 동적할당 해제
-           present=next;//다음노드를 현재노드로 지정한다
-        }   
-    }
+	Node* present, * next;//현재노드랑 다음노드 변수 
+	for (int i = 0; i < g->n; ++i)//vetex의 개수 만큼 반복한다
+	{
+		present = g->nearlist[i];//첫 번째 vertex 인접노드를 present에 넣는다
+		while (present != NULL)//present가 NULL값이 나올때까지 반복한다
+		{
+			next = present->next;//현재노드의 옆노드
+			free(present);//현재노드 동적할당 해제
+			present = next;//다음노드를 현재노드로 지정한다
+		}
+	}
 }
 
 
