@@ -23,7 +23,7 @@ typedef struct
 
 
 
-void initilizeGraph(Graph* g);
+void initilizeGraph(Graph** g);
 void printGraph(Graph* g);
 void insertvertex(Graph* g, int r);
 void insertEdge(Graph* g, int v1, int v2);
@@ -38,8 +38,8 @@ int stack[stack_size] = { 0, };
 int top = -1;
 int queue_empty();
 int queue_full();
-is_empty();
-is_full();
+int is_empty();
+int is_full();
 
 void Print_Graph();
 
@@ -59,11 +59,10 @@ int main()
 {
 	char command;
 	int n1, n2;
-	Graph* G = (Graph*)malloc(sizeof(Graph));
 	int v;
 	int vertex_number = 0;
-
-	printf("\nJeongjaemin      2018038067\n\n");
+	Graph* G=NULL;
+	printf("\nJeongjaemiN      2018038067\n\n");
 	do {
 		printf("\n----------------------------------------------------------------\n");
 		printf("                        Graph  List                        \n");
@@ -80,7 +79,7 @@ int main()
 		switch (command)
 		{
 		case 'z': case 'Z':
-			initilizeGraph(G);
+			initilizeGraph(&G);
 			break;
 		case 'i': case 'I':
 			printf("number of vertex? : ");
@@ -118,12 +117,15 @@ int main()
 }
 
 
-void initilizeGraph(Graph* g)//초기화 함수
+void initilizeGraph(Graph** g)//초기화 함수, 직접 내용을 초기화 시켜주어야 하므로 이중포인터로 받는다
 {
-	g->n = 0;//vertex 갯수 0
+	 if (*g != NULL)//그래프 노드에 뭔가 있다면 초기화 시켜주기
+    	 freeGraph(*g);
+	*g = (Graph*)malloc(sizeof(Graph));
+	(*g)->n = 0;//vertex 갯수 0
 	for (int n = 0; n < MAX_VERTEX; n++)//인접리스트 배열 NULL 값으로 초기화
 	{
-		g->nearlist[n] = NULL;
+		(*g)->nearlist[n] = NULL;
 	}
 
 }
@@ -147,7 +149,7 @@ void insertEdge(Graph* g, int v1, int v2)
 	Node* vertexnode;
 	Node* sort;//인접리스트를 오름차순으로 정렬하기 위한 변수
 	sort = g->nearlist[v1];//정점의 첫 번째 노드를 가리키는 값을 대입
-	if (v1 >= g->n || v2 >= g->n)
+	if (v1 >= g->n || v2 >= g->n)//정점이 설정된 vertex의 수를 초과할 때
 	{
 		printf("\nThere are no vertices to fit in..\n");
 		return;
@@ -205,7 +207,7 @@ void DFS(Graph* g, int v)//깊이우선탐색
 	push(v);//초반에 스택에서 pop을 하여 처음 정점은 두번 넣어 스택에 남아있는 상태를 유지시켜준다
 	push(v);
 	g->visit[v] = 1;         //첫 방문 노드 1로 초기화
-	printf("%d", v);
+	printf("%3d", v);
 
 
 	while (is_empty() != 1) //Stack 비워질때까지 반복
@@ -221,7 +223,7 @@ void DFS(Graph* g, int v)//깊이우선탐색
 				v = d->vertex;//V를 현재 인접노드로 바꿔준다
 				push(v);//V를 집어넣는다   
 				g->visit[v] = 1;//방문체크 배열을 1로 바꿔준다 
-				printf("5%d", v);//v를 출력   
+				printf("%3d", v);//v를 출력   
 				d = g->nearlist[v];//현재 VERTEX에 대한 인접노드로 d를 지정한다
 			}
 			else//노드가 방문한 적 있을 때
@@ -240,7 +242,7 @@ void BFS(Graph* g, int v)//너비 우선 탐색
 	{
 		g->visit[i] = 0;         //방문한 vertex 배열 인덱스 모두 0으로 초기화
 	}
-	printf("%5d", v); /* print */
+	printf("%3d", v); /* print */
 	g->visit[v] = 1;//방문체크 배열을 1로 바꿔준다   
 	addq(v); /* enqueue */
 	while (queue_empty() != 1) {
@@ -249,7 +251,7 @@ void BFS(Graph* g, int v)//너비 우선 탐색
 		{
 			if (!g->visit[w->vertex])//방문했던 노드가 아니라면
 			{
-				printf("%5d", w->vertex);//해당vertex출력
+				printf("%3d", w->vertex);//해당vertex출력
 				addq(w->vertex);//큐에 추가한다
 				g->visit[w->vertex] = 1;//방문체크해준다
 			}
@@ -337,7 +339,7 @@ void Print_Graph(Graph* g)//그래프 출력함수
 		printf("adjlist of vertex %d: ", i);//vertex출력
 		p = g->nearlist[i];//해당 vertex의 인접노드 p에 대입
 		while (p != NULL) {  //해당 vertex에 인접노드 NULL값이 나올때까지 반복
-			printf(", %d", p->vertex);
+			printf(", %3d", p->vertex);
 			p = p->next;       //다음 노드로 이동
 		}
 		printf("\n");
@@ -357,6 +359,7 @@ void freeGraph(Graph* g)//동적할당 해제 함수
 			present = next;//다음노드를 현재노드로 지정한다
 		}
 	}
+	free(g);
 }
 
 
