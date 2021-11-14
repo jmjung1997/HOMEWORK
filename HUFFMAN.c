@@ -9,6 +9,7 @@ typedef struct node {
    struct node* right;
 } Node;
 
+
 Node *head=0;
 
 int add(Node* add_node);
@@ -155,52 +156,66 @@ void createVertex(char t)
    add(new);
 }
 
-int add(Node* add_node)
+int sorting(Node* add_node)
 {
-	
-   if (head == NULL)
-   {
-      head= add_node;
-      return 0;
-   }
 
-   Node*p=head;
-   if (p->cnt >= add_node->cnt) //노드를 연결리스트에 넣으려고했는데 첫번째 노드에 있는 cnt값보다 add_node->cnt 값이 작을 때
-        {
-            add_node->next = p; 
-            head=add_node;
-            return 0;
-        }
-   else
-        {
-		//노드를 연결리스트에 넣으려고했는데 첫번째 노드에 있는 cnt값보다 add_node->cnt 값이 클 때
-        
-            while (p->next != NULL)//p->next를 가리키는 값이 NULL값이 나올 때 까지 반복한다.  
-            {
-                if (p->next->cnt >= add_node->cnt)//현재 p의노드에서 옆에 다음 노드의 cnt값이 넣으려고하는 cnt값보다 크다면
-                {
-					     add_node->next = p->next;
-                    p->next =add_node; //현재 p가 가리키고 다음 노드의 주소 정보를 add_node에 대입한다 
-                    return 0;
-                }
-                p = p->next; //p의 노드를 한 칸씩 움직인다
-            }
-          /* NULL값이 나올 때 까지 while문을 반복했음에도 기존에 있던 노드들의 키값이 넣으려고하는 키값보다 다 작을때*/
-        p->next = add_node; //연결리스트 맨 뒤에 노드를 추가해준다.
-        return 0;
-	      }
+}
+
+
+int add(Node* add_node)//
+{
+	if(head==0)
+   {
+      head=add_node;
+   }
+   Node*temp=head;
+   while (temp->next)
+   {
+      temp=temp->next;
+   }
+   temp->next=add_node;
+   
 }     
 
 
 Node* findsmallest()
 {
-   Node*short_node = head;
-   if (head == 0)
-   {
-      return 0;
-   }
-	head=head->next;
-   return short_node;
+   
+    int short_num =0;
+    Node* short_node = head;
+
+    if (head == 0)
+    {
+        return 0;
+    }
+
+    Node* temp = head;
+    while (temp != 0)
+    {
+        if (temp->cnt < short_num)
+        {
+            short_node = temp;
+            short_num = temp->cnt;
+        }
+        temp = temp->next;
+    }
+
+    if (short_node == head)
+    {
+        head = head->next;
+    }
+    else
+    {
+        Node* prev = head;
+        while (prev->next != short_node)
+        {
+            prev = prev->next;
+        }
+        prev->next = short_node->next;
+    }
+
+    short_node->next = 0;
+    return short_node;
 }
     
 Node* findcharacter(char g)
