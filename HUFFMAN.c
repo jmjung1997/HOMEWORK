@@ -1,237 +1,124 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<string.h>
+
+#define max 100
+#define ALPHABET 27
+
+
+
 typedef struct node {
-   char character;
-   int cnt;
-   struct node* next;
+   int frequency;
+   int character;
    struct node* left;
    struct node* right;
 } Node;
 
 
-Node *head=0;
+typedef struct heap_array{
+  Node *newnode;
+  int freq;
+}element;
 
-int add(Node* add_node);
-Node* HuffmanTree( );
-void inorderTraversal(Node* cur);
-void push(int n);
-int pop();
-void showAll();
-void showCode();
-void characterNum(char* buf_count);
-void createVertex(char t);
-Node* findsmallest();
-Node* findcharacter(char g);
-void freeNode(Node* ptr);
-void printList(Node* h);
+typedef struct heap
+{
+   element heap[max];
+   int heap_size;
+}heaptype;
 
-int stack[100];
-int top = -1;
+
+void initHeap(heaptype* hp) {
+    hp->heap_size = 0;
+}
+
+void insert_heap(heaptype* hp, element item) {
+    int here = ++(hp->heap_size);
+    while ((here != 1) && (item.freq < hp->heap[here / 2].freq)) {
+        hp->heap[here] = hp->heap[here / 2];
+        here /= 2;
+    }
+    hp->heap[here] = item;
+}
+
+element deleteData(heaptype* hp) {
+    int parent, child;
+    element item, temp;
+
+    item=hp->heap[1];
+    temp=hp->heap[(hp->heap_size)--];
+    parent=1;
+    child=2;
+
+
+    while (child <= hp->heap_size)
+   {
+
+      if ((child <= hp->heap_size) && (hp->heap[child].freq) > hp->heap[child + 1].freq)
+
+         child++;
+
+      if (temp.freq < hp->heap[child].freq) break;
+
+      hp->heap[parent] = hp->heap[child];
+
+      parent = child;
+
+      child *= 2;
+
+   }
+   hp->heap[parent]=temp;
+   return item;
+
+}
+
+Node*create_tree(Node*left, Node*right)
+{
+   Node *node=(Node*)malloc(sizeof(Node));
+   node->left=left;
+   node->right=right;
+   return node;
+
+}
+
+
+void delete_tree(Node*head)
+{
+   if(head==NULL)return;
+   delete_tree(head->left);
+   delete_tree(head->right);
+   free(head);
+}
+
+void huffmantree(int Big_char[],int small_char[], int n)
+{
+  if
+}
+
 int main()
 {
-	char buf[100];
-	printf("Put the string to encode: ");
-    scanf("%s", buf);
-	characterNum(buf);
-
-   Node*tree = HuffmanTree();
-   inorderTraversal(tree);
-   printf("clear");
-   return 0;
-}
-
-
-
-Node* HuffmanTree( )
-{
-   
+    int i=0;
+    int j=0;
+    int Freq_big[ALPHABET]={0};
+    int freq_small[ALPHABET]={0};
+    char str[100];
+    printf("Input String : ");
+    scanf("%s", str);
    while (1)
    {
-      Node* first = findsmallest();   // 빈도수 제일 낮은 것을 뽑는다.
-      Node* second = findsmallest();
-
-      if (second == 0)   // 마지막에 트리만 뽑힌다.
+      
+      if(str[i]=='\0') break;
+      j=str[i];
+      if(0<=(j-65)&&(j-65)<=25)
       {
-         return first;
+         Freq_big[j-65]+=1;      
       }
-      Node*new = (Node*)malloc(sizeof(Node));
-      new->next = 0;
-      new->left = first;
-      new->right = second;
-  
-      new->cnt = first->cnt + second->cnt;
-
-      add(new);   // 트리 전체를 구성원으로 넣는다.
-   
+      else if(32<=(j-65)&&(j-65)<57)
+      {
+         freq_small[j-65]+=1;
+      }
+      i++;
    }
    
+    huffmantree( Freq_big, freq_small, ALPHABET);
+    return 0;
 }
-
-
-void inorderTraversal(Node* cur)
-{
-   if (cur == 0)
-   {
-      pop();
-      return;
-   }
-   push(0);
-   inorderTraversal(cur->left);
-   if (cur->left == 0 && cur->right == 0)
-   {
-      printf("%c : ",cur->character);
-      showCode();
-   }
-   push(1);
-   inorderTraversal(cur->right);
-   pop();
-}
-
-void push(int n)
-{
-   top += 1;
-   stack[top] = n;
-}
-
-int pop()
-{
-   int result = stack[top];
-   top -= 1;
-   return result;
-}
-
-
-void showAll()
-{
-   Node*temp =NULL;
-   while (temp != 0)
-   {
-      printf("%c : %d\n", temp->character, temp->cnt);
-      temp = temp->next;
-   }
-}
-
-void showCode()
-{
-   for (int i = top-1; i >= 0; i--)
-   {
-      printf("%d", stack[i]);
-   }
-   printf("\n");
-}
-
-
-void characterNum(char* buf_count)
-{
-   char v;
-   for (int i = 0; i < 99; i++)
-   {
-      if (buf_count[i] == '\0')
-      {
-         return;
-      }
-      v = buf_count[i];
-      if (findcharacter(v) == 0)
-      {
-         createVertex(v);
-      }
-      else
-      {
-         Node*find =findcharacter(v);
-         find->cnt += 1;
-      }
-   }
-}
-
-void createVertex(char t)
-{   
-   Node*new = (Node*)malloc(sizeof(Node));
-   new->character = t;
-   new->cnt = 1;
-   new->left = 0; 
-   new->right = 0;
-   new->next = 0;
-
-   add(new);
-}
-
-int sorting(Node* add_node)
-{
-
-}
-
-
-int add(Node* add_node)//
-{
-	if(head==0)
-   {
-      head=add_node;
-   }
-   Node*temp=head;
-   while (temp->next)
-   {
-      temp=temp->next;
-   }
-   temp->next=add_node;
-   
-}     
-
-
-Node* findsmallest()
-{
-   
-    int short_num =0;
-    Node* short_node = head;
-
-    if (head == 0)
-    {
-        return 0;
-    }
-
-    Node* temp = head;
-    while (temp != 0)
-    {
-        if (temp->cnt < short_num)
-        {
-            short_node = temp;
-            short_num = temp->cnt;
-        }
-        temp = temp->next;
-    }
-
-    if (short_node == head)
-    {
-        head = head->next;
-    }
-    else
-    {
-        Node* prev = head;
-        while (prev->next != short_node)
-        {
-            prev = prev->next;
-        }
-        prev->next = short_node->next;
-    }
-
-    short_node->next = 0;
-    return short_node;
-}
-    
-Node* findcharacter(char g)
-{
-   Node *temp = head;
-   while (temp != 0)
-   {
-      if (temp->character == g)
-      {
-         return temp;
-      }
-      temp = temp->next;
-   }
-   return 0;
-}
-
-
-
-
