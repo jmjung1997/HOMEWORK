@@ -1,154 +1,244 @@
+#define _CRT_SECURE_NO_WARNINGS 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include<string.h>
 
-#define max 100
-#define ALPHABET 27
-
+#define ALPHABET 26
+#define MAX 100
 
 
 typedef struct node {
-   int frequency;
-   char character;
-   struct node* left;
-   struct node* right;
+    int frequency;
+    char character;
+    struct node* left;
+    struct node* right;
 } Node;
 
-Node **heap;
-int lastheap=0;
+Node** heap;
+int lastheap = 0;
+char codetable[MAX];
+int codetable_index = -1;
+char* huffmancode[200];
+void searchcode(Node* temp, char c);
 
-void insert_heap(Node *item) {
-    int here = ++(hp->heap_size);
-    while ((here != 1) && (item->frequency < hp->heap[here / 2]->frequency)) {
-        hp->heap[here] = hp->heap[here / 2];
-        here /= 2;
+
+void add_heap(Node* newnode)
+{
+    lastheap++;
+    heap[lastheap] = newnode;
+    int here = lastheap;
+    int parent = lastheap / 2;
+
+    while (parent >= 1)
+    {
+        if (heap[parent]->frequency > heap[here]->frequency)
+        {
+            Node* temp = heap[parent];
+            heap[parent] = heap[here];
+            heap[here] = temp;
+            here = parent;
+            parent = here / 2;
+        }
+        else
+        {
+            break;
+        }
     }
-    hp->heap[here] = item;
 }
 
-Node* deleteData(heaptype* hp) {
-    int parent, child;
-    Node* item;
-    Node* temp;
-
-    item=hp->heap[1];
-    temp=hp->heap[(hp->heap_size)--];
-    parent=1;
-    child=2;
-
-
-    while (child <= hp->heap_size)
-   {
-
-      if ((child <= hp->heap_size) && (hp->heap[child]->frequency > hp->heap[child + 1]->frequency))
-
-         child++;
-
-      if (temp->frequency < hp->heap[child]->frequency) break;
-
-      hp->heap[parent] = hp->heap[child];
-
-      parent = child;
-
-      child *= 2;
-
-   }
-   hp->heap[parent]=temp;
-   return item;
-
-}
-
-Node*create_tree(Node*left, Node*right)
+Node* delete_heap() 
 {
-   Node *node=(Node*)malloc(sizeof(Node));
-   node->left=left;
-   node->right=right;
-   return node;
-
-}
-
-
-void delete_tree(Node*head)
-{
-   if(head==NULL)return;
-   delete_tree(head->left);
-   delete_tree(head->right);
-   free(head);
-}
-
-void huffmantree(int Big_char[],int small_char[], int n)
-{
-   Node *first;
-   Node *second;
-   
-  while(1)
-  {
-     first=delete_tree();
-     second=delete_tree();
+    int parent = 1; 
+    int child=2;
   
-   if(second)
-  {
-     break;
-  }
-  Node* newone=(Node*)malloc(sizeof(Node));
-  newone->frequency=first->frequency+second->frequency;
-  newone->left=first;
-  newone->right=second;
 
-  insert_heap(newone);
-  }
+    if (lastheap <= 0)
+    {
+        printf("result\n\n");
+        return 0;
+    }
+
+    Node* return_node = heap[1];
+    Node* temp = heap[lastheap--];
+
+    while (child <= lastheap)
+    {
+
+        if ((child <= lastheap) && (heap[child]->frequency > heap[child + 1]->frequency))
+
+            child++;
+     
+        if (temp->frequency < heap[child]->frequency) break;
+
+        heap[parent] = heap[child];
+
+        parent = child;
+
+        child *= 2;
+
+    }
+    heap[parent] = temp;
+    return return_node;
 
 }
+
+
+
+
+void huffmantree()
+{
+    Node* first=0;
+    Node* second=0;
+
+    while (1)
+    {
+        first = delete_heap();
+        second = delete_heap();
+
+        if (second==0)
+        {
+            break;
+        }
+        Node* newone = (Node*)malloc(sizeof(Node));
+        newone->frequency = first->frequency + second->frequency;
+        newone->left = first;
+        newone->right = second;
+        newone->character = 0;
+        add_heap(newone);
+    }
+    memset(huffmancode, 0, sizeof(huffmancode));
+    searchcode(first->left,'0');//first는 허프만트리의 root 노드를 가리킨다. 
+    searchcode(first->right, '1');
+         
+} 
+
+void searchcode(Node* temp, char c)
+{
+    codetable_index++;
+    codetable[codetable_index] = c;
+    codetable[codetable_index + 1] = NULL;
+
+    if (temp->left == 0 && temp->right == 0)
+    {
+        // 문자에 해당하는 허프만 코드 저장하는 함수
+        char* Huffcode = (char*)malloc(strlen(codetable) + 1);
+        strcpy(Huffcode, codetable);
+        huffmancode[(int)temp->character] = Huffcode;
+    }
+    else
+    {
+        searchcode(temp->left, '0');
+        searchcode(temp->right, '1');
+    }
+    codetable[codetable_index] = NULL;
+    codetable_index--;
+    return;
+
+}
+
+
 
 void make_heap(int i, int freq[])
 {
-   Node *cur= (Node*)malloc(sizeof(Node));
-   cur->character=(char)(i+65);
-   cur->frequency=freq;
+    Node* cur = (Node*)malloc(sizeof(Node));
+    
+    cur->character = (char)(i + 65);
+    cur->frequency = freq[i];
+    cur->left = 0;
+    cur->right = 0;
+    add_heap(cur);
 }
 
-int countcharater(int freq[])//출현빈도수 1이상인 갯수를 센다
+void delete_tree(Node* head)
 {
-   int cnt=0;
-   for(int i=0;i<26;i++)
-   {
-      if(freq[i]>0)
-      {
-         cnt++;
-      }
-   }
+    if (head == NULL)return;
+    delete_tree(head->left);
+    delete_tree(head->right);
+    free(head);
 }
+
+int encoding_print(char str_[])
+{
+    int i = 0;
+    int j = 0;
+    while (1)
+    {
+
+        if (str_[i] == '\0') break;
+        j = str_[i];
+        printf("%s",huffmancode[j]);
+    
+        i++;
+    }
+   return 0;       
+}
+
+int decoding_print()
+{
+
+}
+
+
 
 int main()
 {
-    int i=0;
-    int cnt=0;
-    int cnt_big=0;
-    int cnt_small=0;
-    int Freq_big[ALPHABET]={0};
-    int freq_small[ALPHABET]={0};
+    int i = 0;
+    int j = 0;
+    int cnt = 0;
+    int cnt_big = 0;
+    int cnt_small = 0;
+    int Freq_big[ALPHABET] = { 0 };
+    int freq_small[ALPHABET+32] = { 0 };
     char str[100];
+    heap = (Node**)malloc(MAX * sizeof(Node*));
+    memset(heap, 0, MAX* sizeof(Node*));
     printf("Input String : ");
     scanf("%s", str);
-   while (1)
-   {
-      
-      if(str[i]=='\0') break;
-      j=str[i];
-      if(0<=(j-65)&&(j-65)<=25)
-      {
-         Freq_big[j-65]+=1;      
-      }
-      else if(32<=(j-65)&&(j-65)<57)
-      {
-         freq_small[-65]+=1;
-      }
-      i++;
-   }
-   cnt_big=countchara(Freq_big);
-   cnt_small=countchara(freq_small);
-   cnt=cnt_small+cnt_big;
-   heap=(Node**)malloc((cnt+1)*sizeof(Node*));
-  huffmantree( Freq_big, freq_small, ALPHABET);
+    while (1)
+    {
+
+        if (str[i] == '\0') break;
+        j = str[i];
+        if (0 <= (j - 65) && (j - 65) <= 25)
+        {
+            Freq_big[j-65] += 1;
+        }
+        else if (32 <= (j - 65) && (j - 65) <= 57)
+        {
+            freq_small[j-65] += 1;
+           
+        }
+        else
+        {
+            printf("알파벳만 입력해주세요 \n");
+            break;
+        }
+        i++;
+    }
+   
+    for (int i = 0; i < ALPHABET; i++)
+    {
+        if (Freq_big[i] > 0)
+        {
+            make_heap(i, Freq_big);
+        }
+    }
+    for (int i = 32; i < ALPHABET+32; i++)
+    {
+        if (freq_small[i] > 0)
+        {
+            make_heap(i, freq_small);
+        }
+    }
+    huffmantree();
+  
+    printf("encoding to....");
+    encoding_print(str);
+
+    printf("decoding to....");
+  
+
     return 0;
+
 }
