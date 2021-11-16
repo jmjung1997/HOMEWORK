@@ -23,7 +23,7 @@ char* huffmancode[200]; //허프만 부호가 저장되어있는 배열
 void searchcode(Node* temp, char c); //허프만 부호를 찾아가는 배열
 char* result[100];
 void decoding_print(int index);
-void freeNode(Node* ptr);
+
 
 void add_heap(Node* newnode)//힙을 추가하기 위한 함수
 {
@@ -165,27 +165,27 @@ void encoding_print(char str_[])// encoding된 허프만부호를 출력하는 �
         if (str_[i] == '\0') break;//입력받은 문자배열이 끝나면 종료
         j = str_[i]; //입력받은 문자를 아스키코드 숫자로 변환 후
         printf("%s", huffmancode[j]);//huffmancode 해당 인덱스에 저장된 허프만부호를 출력한다
-        char* HuffDecode = (char*)malloc(strlen(codetable) + 1);
+        char* HuffDecode = (char*)malloc(strlen(codetable) + 1);//decode를 위해 출력되는 허프만부호를 이 배열에 담아둠
         strcpy(HuffDecode, huffmancode[j]);
-        result[++index] = huffmancode[j];
+        result[++index] = huffmancode[j];//result 배열에 허프만 부호 담아둠
         i++;
     }
 
     printf("\n\ndecoding to....\n\n");
-    decoding_print(index);
+    decoding_print(index);//자동으로 decoding 시작 
     return;
 }
 
 
-void decoding_print(int index)
+void decoding_print(int index)//decoding을 출력해주는 함수
 {
-    for (int i = 0; i <= index; i++)
+    for (int i = 0; i <= index; i++)// result에 들어 있는 수까지 반복
     {
-        for (int j = 65; j <= 122; j++)
+        for (int j = 65; j <= 122; j++)//huffmancode에 저장되어있는 허프만부호와 같으면
         {
             if (result[i] == huffmancode[j])
             {
-                printf("%c", j);
+                printf("%c", j);//그 부호에 해당하는 알파벳 출력
             }
         }
     }
@@ -193,7 +193,7 @@ void decoding_print(int index)
         return;
 }
 
-/*
+
 void freeNode(Node *ptr)//동적할당 해제함수
 {
     if (ptr)//ptr이 NULL이 아닐때 후위순회로 동적할당을 해제한다
@@ -203,34 +203,51 @@ void freeNode(Node *ptr)//동적할당 해제함수
         free(ptr);//동적할당 해제시켜준다
     }
 }
+/*
+void freecode(char *delete)
+{
+    int i=0;
+    while(1)
+    {
+        if(delete[i]!=NULL)        
+        {
+           free(delete);
+        }  
+        else
+            break;
+          i++;
+    }
+    printf("\ndelete clear\n\n");
+    return;
+}
 
 */
-int main()
+int main()//메인함수
 {
-    int i = 0;
+    int i = 0; 
     int j = 0;
-    int Freq_big[ALPHABET] = { 0 };
-    int freq_small[ALPHABET + 32] = { 0 };
-    char str[100];
-    heap = (Node**)malloc(MAX * sizeof(Node*));
-    memset(heap, 0, MAX * sizeof(Node*));
-    printf("Input String : ");
+    int Freq_big[ALPHABET] = { 0 }; //대문자알파벳 빈도수를 체크하는 배열
+    int freq_small[ALPHABET + 32] = { 0 }; //소문자알파벳 빈도수를 체크하는 배열
+    char str[100];//문자열을 받아오는 배열
+    heap = (Node**)malloc(MAX * sizeof(Node*)); //힙 배열을 위해 heap을 MAX갯수만큼 동적할당 해준다
+    memset(heap, 0, MAX * sizeof(Node*));//초기화
+    printf("Input String : ");//문자열 입력
     scanf("%s", str);
     while (1)
     {
 
-        if (str[i] == '\0') break;
+        if (str[i] == '\0') break;//문자열 끝이면 반복문 종료
         j = str[i];
-        if (0 <= (j - 65) && (j - 65) <= 25)
+        if (0 <= (j - 65) && (j - 65) <= 25)//대문자 빈도수세기
         {
             Freq_big[j - 65] += 1;
         }
-        else if (32 <= (j - 65) && (j - 65) <= 57)
+        else if (32 <= (j - 65) && (j - 65) <= 57)//소문자 빈도수세기
         {
             freq_small[j - 65] += 1;
 
         }
-        else
+        else//그외 문자는 허용하지 않음
         {
             printf("알파벳만 입력해주세요 \n");
             break;
@@ -238,25 +255,32 @@ int main()
         i++;
     }
 
-    for (int i = 0; i < ALPHABET; i++)
+    for (int i = 0; i < ALPHABET; i++)//대문자를 힙배열에 넣기
     {
         if (Freq_big[i] > 0)
         {
             make_heap(i, Freq_big);
         }
     }
-    for (int i = 32; i < ALPHABET + 32; i++)
+    for (int i = 32; i < ALPHABET + 32; i++)//소문자를 힙배열에 넣기
     {
         if (freq_small[i] > 0)
         {
             make_heap(i, freq_small);
         }
     }
-    huffmantree();
+    huffmantree();//허프만 트리 생성
     printf("encoding to....\n\n");
-    encoding_print(str);
+    encoding_print(str);//생성된 허프만 부호 출력
 
-    //freenode(heap[1]); //힙배열에 있는 허프만트리 동적할당 해제
+    //freecode(huffmancode);/*동적할당 해제*/
+    
+    /*
+    freecode(result);
+    freenode(heap[1]);  
+
+    free(heap);
+*/
     return 0;
 
 }
