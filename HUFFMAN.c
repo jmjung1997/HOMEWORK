@@ -21,7 +21,7 @@ char codetable[MAX]; //허프만 부호 생성을 위한 배열
 int codetable_index = -1;
 char* huffmancode[200]; //허프만 부호가 저장되어있는 배열
 void searchcode(Node* temp, char c); //허프만 부호를 찾아가는 배열
-char result[][50] = { 0, };
+char* result[100];
 void decoding_print(int index);
 void freeNode(Node* ptr);
 
@@ -73,8 +73,9 @@ Node* delete_heap()//힙의 앞부분부터 빼서 삭제 해준다
 
         if (temp->frequency < heap[child]->frequency) break; //temp가 빈도수를 비교하여 제 위치에 왔으면 반복문 종료
 
+        Node* temp = heap[parent]; /*현재 노드와 부모 노드 위치를 바꿔준다*/
         heap[parent] = heap[child];//현재 child노드를 부모노드에 대입
-
+        heap[child] = temp;
         parent = child;//현재 child index를 parent로
 
         child *= 2;// 더 밑에 child로 이동
@@ -123,7 +124,7 @@ void searchcode(Node* temp, char c) //재귀함수를 이용하여 허프만 부
 
     if (temp->left == 0 && temp->right == 0)//문자에 해당하는 노드일 경우
     {
-        
+
         char* Huffcode = (char*)malloc(strlen(codetable) + 1);
         strcpy(Huffcode, codetable);
         huffmancode[(int)temp->character] = Huffcode;//huffcode라는 배열에 실제 문자 아스키코드에 해당하는 인덱스로 허프만부호 저장한다
@@ -159,46 +160,41 @@ void encoding_print(char str_[])// encoding된 허프만부호를 출력하는 �
     int j = 0;
     int index = -1;
     while (1)
-    {//
+    {
 
         if (str_[i] == '\0') break;//입력받은 문자배열이 끝나면 종료
         j = str_[i]; //입력받은 문자를 아스키코드 숫자로 변환 후
         printf("%s", huffmancode[j]);//huffmancode 해당 인덱스에 저장된 허프만부호를 출력한다
-        //result[++index][20] = huffmancode[j];
+        char* HuffDecode = (char*)malloc(strlen(codetable) + 1);
+        strcpy(HuffDecode, huffmancode[j]);
+        result[++index] = huffmancode[j];
         i++;
     }
 
     printf("\n\ndecoding to....\n\n");
-    //decoding_print(index);
+    decoding_print(index);
     return;
 }
 
 
-/*
 void decoding_print(int index)
 {
-    char decode_result[100];
-
-    for (int i = 0; i < index; i++)
+    for (int i = 0; i <= index; i++)
     {
-        if (result[i][50] == 0)
-        {
-            return;
-        }
         for (int j = 65; j <= 122; j++)
         {
-            if (result[i][50] == huffmancode[j])
+            if (result[i] == huffmancode[j])
             {
-                decode_result[i]=(char)j;
+                printf("%c", j);
             }
         }
     }
-    printf("%s",decode_result);
-    return;
+        printf("\n\n\n");
+        return;
 }
-*/
+
 /*
-void freeNode(Node*ptr)//동적할당 해제함수
+void freeNode(Node *ptr)//동적할당 해제함수
 {
     if (ptr)//ptr이 NULL이 아닐때 후위순회로 동적할당을 해제한다
     {
@@ -209,7 +205,6 @@ void freeNode(Node*ptr)//동적할당 해제함수
 }
 
 */
-
 int main()
 {
     int i = 0;
@@ -261,7 +256,7 @@ int main()
     printf("encoding to....\n\n");
     encoding_print(str);
 
-  // freenode(heap[1]);//힙배열에 있는 허프만트리 동적할당 해제
+    //freenode(heap[1]); //힙배열에 있는 허프만트리 동적할당 해제
     return 0;
 
 }
