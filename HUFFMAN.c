@@ -5,7 +5,7 @@
 #include<string.h>
 
 #define ALPHABET 26
-#define MAX 100
+#define MAX 1000000
 
 
 typedef struct node { //허프만 트리에 들어갈 구조체
@@ -19,9 +19,9 @@ Node** heap; //노드 구조체 배열을 선언하기 위해 더블 포인터 �
 int lastheap = 0; // 힙 사이즈를 위한 전역 선언
 char codetable[MAX]; //허프만 부호 생성을 위한 배열
 int codetable_index = -1;
-char* huffmancode[200]; //허프만 부호가 저장되어있는 배열
+char* huffmancode[1000000]; //허프만 부호가 저장되어있는 배열
 void searchcode(Node* temp, char c); //허프만 부호를 찾아가는 배열
-char* result[100];
+char* result[1000000];
 void decoding_print(int index);
 
 
