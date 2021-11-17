@@ -194,12 +194,12 @@ void decoding_print(int index)//decoding을 출력해주는 함수
 }
 
 
-void freeNode(Node *ptr)//동적할당 해제함수
+void freeHUFFMANttree(Node *ptr)//동적할당 해제함수
 {
     if (ptr)//ptr이 NULL이 아닐때 후위순회로 동적할당을 해제한다
     {
-        freeNode(ptr->left);//ptr이 NULL이 나올때 까지 왼쪽으로 이동한다
-        freeNode(ptr->right);//ptr->right로 이동한다
+        freeHUFFMANttree(ptr->left);//ptr이 NULL이 나올때 까지 왼쪽으로 이동한다
+        freeHUFFMANttree(ptr->right);//ptr->right로 이동한다
         free(ptr);//동적할당 해제시켜준다
     }
 }
@@ -220,7 +220,6 @@ void freecode(char *delete)
     printf("\ndelete clear\n\n");
     return;
 }
-
 */
 int main()//메인함수
 {
@@ -275,12 +274,12 @@ int main()//메인함수
 
     //freecode(huffmancode);/*동적할당 해제*/
     
-    /*
-    freecode(result);
-    freenode(heap[1]);  
+    
+   // freecode(result);
+    freeHUFFMANttree(heap[1]);//허프만 트리 동적할당해제
 
     free(heap);
-*/
+
     return 0;
 
 }
